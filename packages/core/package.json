@@ -20,6 +20,10 @@
       "types": "./dist/scale-mapper.d.ts",
       "import": "./dist/scale-mapper.js"
     },
+    "./input-manager": {
+      "types": "./dist/input-manager.d.ts",
+      "import": "./dist/input-manager.js"
+    },
     "./games": {
       "types": "./dist/games/index.d.ts",
       "import": "./dist/games/index.js"
