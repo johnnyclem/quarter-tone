@@ -96,7 +96,67 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 .disco-dot{position:fixed;width:3px;height:3px;border-radius:50%;background:white;opacity:0;animation:disco-sparkle var(--dur) var(--delay) infinite;z-index:1;pointer-events:none}
 @keyframes disco-sparkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:var(--peak);transform:scale(1.5)}}
 
-@media(max-width:600px){.side-bezel{width:12px}#marquee{height:40px;padding:0 8px}.marquee-title{font-size:14px;margin-left:20px}.marquee-game{font-size:7px}.marquee-right{margin-right:20px}#marquee::before,#marquee::after{display:none}#control-deck{height:32px;padding:0 14px;gap:8px;font-size:6px}}
+/* RESPONSIVE BREAKPOINTS
+   Desktop  (>=1024px): defaults above (28px bezels, 260px drawer)
+   Tablet   (601-1023px): scaled bezels, slimmer drawer
+   Mobile   (<=600px):   minimal bezels, full-width drawer overlay
+   Landscape-short: trim chrome when vertical space is tight      */
+
+/* TABLET */
+@media(max-width:1023px) and (min-width:601px){
+  .side-bezel{width:20px}
+  .side-bezel::after{top:14px;bottom:14px;width:3px}
+  #marquee{height:46px;padding:0 12px}
+  #marquee::before,#marquee::after{width:40px;top:6px;bottom:6px}
+  .marquee-title{font-size:16px;letter-spacing:2px;margin-left:44px}
+  .marquee-game{font-size:8px;margin-left:12px}
+  .marquee-right{margin-right:44px;gap:7px}
+  .marquee-score{font-size:9px}
+  .m-btn{font-size:6px;padding:4px 7px}
+  #control-deck{height:36px;padding:0 24px;gap:12px;font-size:6px}
+  #synth-drawer{width:220px;right:-220px;padding:54px 12px 12px}
+  #synth-toggle.open{right:220px}
+  .menu-title{font-size:20px;margin-bottom:24px}
+  .game-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;padding:0 20px 24px}
+}
+
+/* MOBILE */
+@media(max-width:600px){
+  .side-bezel{width:10px}
+  .side-bezel::after{display:none}
+  #marquee{height:40px;padding:0 8px}
+  #marquee::before,#marquee::after{display:none}
+  .marquee-title{font-size:13px;letter-spacing:1px;margin-left:6px}
+  .marquee-game{font-size:6px;margin-left:8px}
+  .marquee-right{margin-right:6px;gap:5px}
+  .marquee-score{font-size:7px}
+  .m-btn{font-size:5px;padding:3px 5px}
+  #control-deck{height:32px;padding:0 10px;gap:8px;font-size:5px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none}
+  #control-deck::-webkit-scrollbar{display:none}
+  #control-deck>span{flex-shrink:0}
+  /* Full-width drawer overlay on mobile */
+  #synth-drawer{width:100vw;right:-100vw;padding:56px 20px 20px}
+  #synth-drawer.open{right:0}
+  #synth-toggle{top:auto;bottom:8px;transform:none;writing-mode:horizontal-tb;padding:6px 10px;border-radius:6px 0 0 6px;font-size:7px;letter-spacing:2px}
+  #synth-toggle.open{right:0;top:8px;bottom:auto}
+  .knob-row{gap:14px;justify-content:flex-start}
+  .knob-group{min-width:60px}
+  .panel-label{font-size:9px}
+  .menu-title{font-size:18px;margin-bottom:20px}
+  .game-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;padding:0 14px 20px}
+  .game-card{padding:10px 6px}
+  .game-card .emoji{font-size:26px;margin-bottom:6px}
+  #game-menu{padding-top:24px}
+}
+
+/* LANDSCAPE / SHORT VIEWPORTS: trim vertical chrome */
+@media(max-height:480px) and (orientation:landscape){
+  #marquee{height:36px}
+  .marquee-title{font-size:14px}
+  #control-deck{height:28px;font-size:6px}
+  .side-bezel{width:14px}
+  #synth-drawer{padding-top:44px}
+}
 ```
 
   </style>
