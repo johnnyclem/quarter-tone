@@ -20,6 +20,10 @@
       "types": "./dist/scale-mapper.d.ts",
       "import": "./dist/scale-mapper.js"
     },
+    "./synth-store": {
+      "types": "./dist/synth-store.d.ts",
+      "import": "./dist/synth-store.js"
+    },
     "./games": {
       "types": "./dist/games/index.d.ts",
       "import": "./dist/games/index.js"
@@ -49,5 +53,8 @@
     "games",
     "synth",
     "quarter-tone"
-  ]
+  ],
+  "dependencies": {
+    "zustand": "^5.0.12"
+  }
 }
