@@ -1,0 +1,64 @@
+{
+  "name": "@quarter-tone/audio",
+  "version": "0.1.0",
+  "description": "Tone.js audio engine + SynthMapper bridge for the Quarter Tone arcade.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./synth-mapper": {
+      "types": "./dist/synth-mapper.d.ts",
+      "import": "./dist/synth-mapper.js"
+    },
+    "./tone-types": {
+      "types": "./dist/tone-types.d.ts",
+      "import": "./dist/tone-types.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist coverage",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@quarter-tone/core": "*"
+  },
+  "peerDependencies": {
+    "tone": ">=14.0.0 <16"
+  },
+  "peerDependenciesMeta": {
+    "tone": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.6.0",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "tone",
+    "tone.js",
+    "synth",
+    "audio",
+    "polysynth",
+    "quarter-tone"
+  ]
+}
