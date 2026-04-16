@@ -161,6 +161,44 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 </div>
 <script>
 const canvas=document.getElementById('game-canvas'),ctx=canvas.getContext('2d'),GAME_W=480,GAME_H=400;
+/* RenderContext: thin, chainable wrapper over Canvas2D.
+   Each method returns `this` so draw calls can be fluent. Style args are
+   optional -- pass a color/width to set state before drawing, or omit to
+   reuse the current context state. Use `.ctx` for direct Canvas2D access. */
+class RenderContext{
+  constructor(canvas){this.canvas=canvas;this.ctx=canvas.getContext('2d');}
+  get width(){return this.canvas.width;}
+  get height(){return this.canvas.height;}
+  /* Transform stack */
+  save(){this.ctx.save();return this;}
+  restore(){this.ctx.restore();return this;}
+  translate(x,y){this.ctx.translate(x,y);return this;}
+  rotate(a){this.ctx.rotate(a);return this;}
+  scale(sx,sy){this.ctx.scale(sx,sy===undefined?sx:sy);return this;}
+  /* Style setters */
+  fillStyle(c){this.ctx.fillStyle=c;return this;}
+  strokeStyle(c){this.ctx.strokeStyle=c;return this;}
+  lineWidth(w){this.ctx.lineWidth=w;return this;}
+  lineDash(d){this.ctx.setLineDash(d||[]);return this;}
+  font(f){this.ctx.font=f;return this;}
+  /* Shape drawing (color arg optional, sets fillStyle/strokeStyle if provided) */
+  clear(color){if(color!==undefined){this.ctx.fillStyle=color;this.ctx.fillRect(0,0,this.width,this.height);}else this.ctx.clearRect(0,0,this.width,this.height);return this;}
+  rect(x,y,w,h,color){if(color!==undefined)this.ctx.fillStyle=color;this.ctx.fillRect(x,y,w,h);return this;}
+  rectStroke(x,y,w,h,color,lw){if(color!==undefined)this.ctx.strokeStyle=color;if(lw!==undefined)this.ctx.lineWidth=lw;this.ctx.strokeRect(x,y,w,h);return this;}
+  circle(x,y,r,color){if(color!==undefined)this.ctx.fillStyle=color;this.ctx.beginPath();this.ctx.arc(x,y,r,0,Math.PI*2);this.ctx.fill();return this;}
+  circleStroke(x,y,r,color,lw){if(color!==undefined)this.ctx.strokeStyle=color;if(lw!==undefined)this.ctx.lineWidth=lw;this.ctx.beginPath();this.ctx.arc(x,y,r,0,Math.PI*2);this.ctx.stroke();return this;}
+  line(x1,y1,x2,y2,color,lw){if(color!==undefined)this.ctx.strokeStyle=color;if(lw!==undefined)this.ctx.lineWidth=lw;this.ctx.beginPath();this.ctx.moveTo(x1,y1);this.ctx.lineTo(x2,y2);this.ctx.stroke();return this;}
+  text(str,x,y,color,font){if(color!==undefined)this.ctx.fillStyle=color;if(font!==undefined)this.ctx.font=font;this.ctx.fillText(str,x,y);return this;}
+  /* Path API passthrough for shapes built from segments */
+  beginPath(){this.ctx.beginPath();return this;}
+  moveTo(x,y){this.ctx.moveTo(x,y);return this;}
+  lineTo(x,y){this.ctx.lineTo(x,y);return this;}
+  arc(x,y,r,start,end){this.ctx.arc(x,y,r,start,end);return this;}
+  closePath(){this.ctx.closePath();return this;}
+  fill(color){if(color!==undefined)this.ctx.fillStyle=color;this.ctx.fill();return this;}
+  stroke(color,lw){if(color!==undefined)this.ctx.strokeStyle=color;if(lw!==undefined)this.ctx.lineWidth=lw;this.ctx.stroke();return this;}
+}
+const render=new RenderContext(canvas);
 function resizeCanvas(){const vp=document.getElementById('game-viewport');if(!vp)return;const vw=vp.clientWidth,vh=vp.clientHeight,scale=Math.min(vw/GAME_W,vh/GAME_H);canvas.style.width=Math.floor(GAME_W*scale)+'px';canvas.style.height=Math.floor(GAME_H*scale)+'px';}
 window.addEventListener('resize',resizeCanvas);
 (function(){const env=document.getElementById('disco-env');for(let i=0;i<25;i++){const d=document.createElement('div');d.className='disco-dot';d.style.left=Math.random()*100+'%';d.style.top=Math.random()*100+'%';d.style.setProperty('--dur',(3+Math.random()*5)+'s');d.style.setProperty('--delay',(Math.random()*5)+'s');d.style.setProperty('--peak',(0.12+Math.random()*0.25).toFixed(2));env.appendChild(d);}})();
