@@ -124,6 +124,25 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 .disco-dot{position:fixed;width:3px;height:3px;border-radius:50%;background:white;opacity:0;animation:disco-sparkle var(--dur) var(--delay) infinite;z-index:1;pointer-events:none}
 @keyframes disco-sparkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:var(--peak);transform:scale(1.5)}}
 
+/* TOUCH CONTROLS */
+#touch-controls{position:fixed;left:0;right:0;bottom:0;display:none;justify-content:space-between;align-items:flex-end;padding:12px 18px 18px;pointer-events:none;z-index:80;gap:12px}
+#touch-controls.enabled{display:flex}
+body:has(#game-menu:not(.hidden)) #touch-controls,body:has(#title-screen:not(.hidden)) #touch-controls{opacity:0;pointer-events:none}
+.dpad{position:relative;width:150px;height:150px;pointer-events:none;flex-shrink:0}
+.dpad-btn{position:absolute;width:50px;height:50px;background:rgba(34,238,255,0.1);border:2px solid var(--neon-cyan);color:var(--neon-cyan);font-family:'Press Start 2P',monospace;font-size:14px;border-radius:8px;box-shadow:0 0 8px rgba(34,238,255,0.35),inset 0 0 10px rgba(34,238,255,0.08);display:flex;align-items:center;justify-content:center;pointer-events:auto;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;cursor:pointer;transition:transform .08s,box-shadow .08s,background .08s;padding:0}
+.dpad-btn.pressed{background:rgba(34,238,255,0.4);box-shadow:0 0 18px rgba(34,238,255,0.75),inset 0 0 14px rgba(34,238,255,0.4);transform:scale(0.92)}
+.dpad-up{top:0;left:50px}
+.dpad-down{bottom:0;left:50px}
+.dpad-left{top:50px;left:0}
+.dpad-right{top:50px;right:0}
+.dpad-center{position:absolute;top:55px;left:55px;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle,rgba(184,41,221,0.25),transparent 70%);pointer-events:none}
+.action-cluster{display:flex;gap:14px;align-items:flex-end;pointer-events:none}
+.action-btn{border:2px solid var(--neon-pink);background:rgba(255,45,149,0.12);color:var(--neon-pink);font-family:'Press Start 2P',monospace;box-shadow:0 0 10px var(--glow-pink),inset 0 0 12px rgba(255,45,149,0.08);pointer-events:auto;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;cursor:pointer;transition:transform .08s,box-shadow .08s,background .08s;padding:0}
+.action-a{width:72px;height:72px;border-radius:50%;font-size:16px}
+.action-menu{width:54px;height:54px;border-radius:50%;font-size:9px;border-color:var(--neon-amber);color:var(--neon-amber);background:rgba(255,170,34,0.12);box-shadow:0 0 10px var(--glow-amber),inset 0 0 12px rgba(255,170,34,0.08)}
+.action-btn.pressed{background:rgba(255,45,149,0.42);box-shadow:0 0 20px var(--glow-pink),inset 0 0 16px rgba(255,45,149,0.4);transform:scale(0.92)}
+.action-menu.pressed{background:rgba(255,170,34,0.42);box-shadow:0 0 20px var(--glow-amber),inset 0 0 16px rgba(255,170,34,0.4)}
+
 /* RESPONSIVE BREAKPOINTS — panels/menu.
    Cabinet chrome (bezel, marquee, control-deck) lives in styles/cabinet.css. */
 
@@ -149,6 +168,14 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
   .game-card{padding:10px 6px}
   .game-card .emoji{font-size:26px;margin-bottom:6px}
   #game-menu{padding-top:24px}
+  #touch-controls{padding:8px 10px 10px}
+  .dpad{width:132px;height:132px}
+  .dpad-btn{width:44px;height:44px;font-size:12px}
+  .dpad-up,.dpad-down{left:44px}
+  .dpad-left,.dpad-right{top:44px}
+  .dpad-center{top:48px;left:48px;width:36px;height:36px}
+  .action-a{width:64px;height:64px;font-size:14px}
+  .action-menu{width:48px;height:48px;font-size:8px}
 }
 
 /* LANDSCAPE / SHORT VIEWPORTS */
@@ -224,6 +251,19 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
     <div class="knob-group"><span class="knob-name">ATTACK</span><span class="knob-val" id="knob-attack" onclick="cycleAttack()">0.02</span></div>
     <div class="knob-group"><span class="knob-name">RELEASE</span><span class="knob-val" id="knob-release" onclick="cycleRelease()">0.3</span></div>
   </div></div>
+</div>
+<div id="touch-controls" aria-hidden="false">
+  <div class="dpad" role="group" aria-label="Directional pad">
+    <button type="button" class="dpad-btn dpad-up" data-key="ArrowUp" aria-label="Up">▲</button>
+    <button type="button" class="dpad-btn dpad-left" data-key="ArrowLeft" aria-label="Left">◀</button>
+    <button type="button" class="dpad-btn dpad-right" data-key="ArrowRight" aria-label="Right">▶</button>
+    <button type="button" class="dpad-btn dpad-down" data-key="ArrowDown" aria-label="Down">▼</button>
+    <span class="dpad-center" aria-hidden="true"></span>
+  </div>
+  <div class="action-cluster" role="group" aria-label="Action buttons">
+    <button type="button" class="action-btn action-menu" data-action="menu" aria-label="Menu">MENU</button>
+    <button type="button" class="action-btn action-a" data-key=" " aria-label="Action">A</button>
+  </div>
 </div>
 <script type="module">
 /* 2.6 — Zustand-backed synth state. One vanilla store owns every TONE/FX
@@ -402,6 +442,36 @@ let currentGame=null,gameLoop=null,score=0,keys={};
 document.addEventListener('keydown',e=>{keys[e.key]=true;if(e.key==='Tab'){e.preventDefault();toggleMenu();}if(e.key==='q'||e.key==='Q')cycleScale();if(currentGame&&currentGame.onKey)currentGame.onKey(e.key,true);});
 document.addEventListener('keyup',e=>{keys[e.key]=false;});
 function toggleMenu(){document.getElementById('game-menu').classList.toggle('hidden');}
+function initTouchControls(){
+  const tc=document.getElementById('touch-controls');if(!tc||tc.dataset.wired==='1')return;
+  const isTouch='ontouchstart' in window||navigator.maxTouchPoints>0||(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
+  if(isTouch)tc.classList.add('enabled');
+  const wired=[];
+  tc.querySelectorAll('[data-key]').forEach(btn=>{
+    const key=btn.dataset.key;let held=false,delayT=null,repT=null;
+    const stopRepeat=()=>{if(delayT){clearTimeout(delayT);delayT=null;}if(repT){clearInterval(repT);repT=null;}};
+    const press=()=>{if(held)return;held=true;btn.classList.add('pressed');keys[key]=true;if(currentGame&&currentGame.onKey)currentGame.onKey(key,true);stopRepeat();delayT=setTimeout(()=>{repT=setInterval(()=>{if(currentGame&&currentGame.onKey)currentGame.onKey(key,true);},60);},250);};
+    const release=()=>{if(!held)return;held=false;btn.classList.remove('pressed');keys[key]=false;stopRepeat();};
+    btn.addEventListener('touchstart',e=>{e.preventDefault();press();},{passive:false});
+    btn.addEventListener('touchend',e=>{e.preventDefault();release();},{passive:false});
+    btn.addEventListener('touchcancel',e=>{e.preventDefault();release();},{passive:false});
+    btn.addEventListener('mousedown',e=>{e.preventDefault();press();});
+    btn.addEventListener('mouseup',e=>{e.preventDefault();release();});
+    btn.addEventListener('mouseleave',()=>release());
+    btn.addEventListener('contextmenu',e=>e.preventDefault());
+    wired.push({btn,key,release});
+  });
+  const menuBtn=tc.querySelector('[data-action="menu"]');
+  if(menuBtn){
+    const flash=()=>{menuBtn.classList.add('pressed');setTimeout(()=>menuBtn.classList.remove('pressed'),120);};
+    const fire=e=>{e.preventDefault();e.stopPropagation();flash();toggleMenu();};
+    menuBtn.addEventListener('touchstart',fire,{passive:false});
+    menuBtn.addEventListener('click',fire);
+    menuBtn.addEventListener('contextmenu',e=>e.preventDefault());
+  }
+  window.addEventListener('blur',()=>{wired.forEach(w=>w.release());});
+  tc.dataset.wired='1';
+}
 function setScore(s){score=s;document.getElementById('score-display').textContent=s;}
 const W=GAME_W,H=GAME_H;
 const GAMES=[
@@ -421,7 +491,7 @@ const GAMES=[
 function buildMenu(){const g=document.getElementById('game-grid');g.innerHTML='';for(const gm of GAMES){const c=document.createElement('div');c.className='game-card';c.innerHTML='<span class="emoji">'+gm.emoji+'</span><div class="name">'+gm.name+'</div><div class="desc">'+gm.desc+'</div>';c.onclick=()=>launchGame(gm.id);g.appendChild(c);}}
 function launchGame(id){const g=GAMES.find(gm=>gm.id===id);if(!g)return;currentGame=g;g.init();document.getElementById('game-menu').classList.add('hidden');document.getElementById('current-game-label').textContent=g.name.toUpperCase();analytics.selectGame(id,'menu');}
 function gameFrame(){if(currentGame){currentGame.update();currentGame.draw();}requestAnimationFrame(gameFrame);}
-async function startArcade(){await initAudio();document.getElementById('title-screen').classList.add('hidden');document.getElementById('cabinet').classList.add('active');document.getElementById('synth-toggle').classList.add('active');buildMenu();resizeCanvas();gameFrame();analytics.startSession();}
+async function startArcade(){await initAudio();document.getElementById('title-screen').classList.add('hidden');document.getElementById('cabinet').classList.add('active');document.getElementById('synth-toggle').classList.add('active');buildMenu();initTouchControls();resizeCanvas();gameFrame();analytics.startSession();}
 window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();});
 
 /* ---------------------------------------------------------------------------
