@@ -28,7 +28,11 @@
     "paths": {
       "@/*": ["src/*"],
       "@app/*": ["src/*"],
-      "@core/*": ["../core/src/*"]
+      "@core/*": ["../core/src/*"],
+      "@quarter-tone/core": ["../core/src/index.ts"],
+      "@quarter-tone/core/*": ["../core/src/*"],
+      "@quarter-tone/audio": ["../audio/src/index.ts"],
+      "@quarter-tone/audio/*": ["../audio/src/*"]
     }
   },
   "include": ["src"],

@@ -95,6 +95,18 @@ export default tseslint.config(
     },
   },
 
+  // Playwright E2E specs run in Node (driver) but also reference browser
+  // globals (window, console) inside page.evaluate callbacks.
+  {
+    files: ['tests/e2e/**/*.{js,ts}', 'playwright.config.{js,ts}'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+      },
+    },
+  },
+
   // Disable stylistic rules that conflict with Prettier — always last.
   prettierConfig,
 );
