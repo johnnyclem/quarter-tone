@@ -1,0 +1,28 @@
+{
+  "name": "Quarter Tone",
+  "short_name": "QuarterTone",
+  "description": "Classic arcade-inspired sequencers with an embedded synthesizer and drum machine.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d0815",
+  "theme_color": "#ff2d95",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["games", "music", "entertainment"],
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
