@@ -17,7 +17,7 @@
       --bezel: #18102a;
     }
     *{margin:0;padding:0;box-sizing:border-box}
-    body{background:#000;font-family:'Press Start 2P',monospace;color:var(--text-warm);overflow:hidden;height:100vh;width:100vw}
+    body{background:#000;font-family:'Press Start 2P',monospace;color:var(--text-warm);overflow:hidden;height:100vh;width:100vw;height:100dvh}
 
 /* TITLE */
 #title-screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;background:radial-gradient(ellipse at 50% 40%,rgba(184,41,221,0.2) 0%,transparent 60%),radial-gradient(ellipse at center,var(--deep-purple) 0%,var(--arcade-dark) 100%);transition:opacity 0.6s}
@@ -51,10 +51,23 @@
 .side-bezel.left::after{right:6px}.side-bezel.right::after{left:6px}
 .side-bezel.left{border-right:1px solid rgba(184,41,221,0.2);box-shadow:2px 0 15px rgba(184,41,221,0.08)}
 .side-bezel.right{border-left:1px solid rgba(184,41,221,0.2);box-shadow:-2px 0 15px rgba(184,41,221,0.08)}
-#game-viewport{flex:1;display:flex;align-items:center;justify-content:center;position:relative;background:var(--screen-bg)}
-#game-canvas{image-rendering:pixelated;image-rendering:crisp-edges}
-#game-viewport::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px);pointer-events:none;z-index:6}
-#game-viewport::before{content:'';position:absolute;inset:0;box-shadow:inset 0 0 100px rgba(0,0,0,0.6),inset 0 0 30px rgba(184,41,221,0.04);border:1px solid rgba(184,41,221,0.08);pointer-events:none;z-index:7}
+#game-viewport{flex:1;display:flex;align-items:center;justify-content:center;position:relative;background:var(--screen-bg);padding:6px;min-height:0;min-width:0}
+/* CRT frame: aspect-ratio-locked wrapper around the canvas. JS sizes it to the
+   largest 480x400 box that fits the viewport; canvas fills 100% of it. */
+#crt-frame{position:relative;width:0;height:0;background:#000;box-shadow:0 0 24px rgba(184,41,221,0.18),0 0 2px rgba(255,45,149,0.3);border-radius:4px;overflow:hidden}
+#game-canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+/* CRT scanlines — fixed-thickness repeating bands over the canvas only. */
+#crt-frame::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,0.28) 2px,rgba(0,0,0,0.28) 3px);mix-blend-mode:multiply;pointer-events:none;z-index:6}
+/* CRT vignette, phosphor tint, and faint bezel edge. */
+#crt-frame::before{content:'';position:absolute;inset:0;box-shadow:inset 0 0 120px rgba(0,0,0,0.65),inset 0 0 40px rgba(184,41,221,0.08);border:1px solid rgba(184,41,221,0.18);border-radius:4px;pointer-events:none;z-index:7}
+/* Extra CRT layer: subpixel RGB mask + very subtle flicker. */
+.crt-mask{position:absolute;inset:0;pointer-events:none;z-index:8;background:repeating-linear-gradient(90deg,rgba(255,45,149,0.04) 0,rgba(255,45,149,0.04) 1px,rgba(34,238,255,0.04) 1px,rgba(34,238,255,0.04) 2px,rgba(255,170,34,0.04) 2px,rgba(255,170,34,0.04) 3px);mix-blend-mode:screen;opacity:0.55;animation:crt-flicker 5.2s steps(24,end) infinite}
+@keyframes crt-flicker{0%,96%,100%{opacity:0.55}97%{opacity:0.4}98%{opacity:0.62}99%{opacity:0.48}}
+/* CRT-off accessibility mode — disables all overlay layers. */
+body.crt-off #crt-frame::after,body.crt-off #crt-frame::before,body.crt-off .crt-mask{display:none}
+body.crt-off #crt-frame{box-shadow:none;border-radius:0}
+/* Fullscreen state — shrink side bezels so the screen fills the display. */
+:fullscreen .side-bezel,:-webkit-full-screen .side-bezel{width:8px}
 
 /* CONTROL DECK */
 #control-deck{height:40px;flex-shrink:0;background:linear-gradient(0deg,#2c1050 0%,var(--bezel) 100%);border-top:3px solid var(--neon-purple);box-shadow:0 -3px 20px var(--glow-purple);display:flex;align-items:center;padding:0 40px;gap:18px;font-size:7px;color:var(--text-dim);position:relative;z-index:10}
@@ -116,13 +129,18 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
       <button class="m-btn" onclick="saveGameState()" title="Save game state">SAVE</button>
       <button class="m-btn" onclick="loadGameState()" title="Load saved state">LOAD</button>
       <button class="m-btn" onclick="randomizeAll()">🎲</button>
+      <button class="m-btn" id="crt-btn" onclick="toggleCRT()" title="Toggle CRT overlay">CRT</button>
+      <button class="m-btn" onclick="toggleFullscreen()" title="Toggle fullscreen">⛶</button>
       <button class="m-btn" onclick="toggleSynth()">♫</button>
     </div>
   </div>
   <div id="screen-wrap">
     <div class="side-bezel left"></div>
     <div id="game-viewport">
-      <canvas id="game-canvas" width="480" height="400"></canvas>
+      <div id="crt-frame">
+        <canvas id="game-canvas" width="480" height="400"></canvas>
+        <div class="crt-mask"></div>
+      </div>
       <div id="game-menu">
         <div class="menu-title">SELECT GAME</div>
         <div class="game-grid" id="game-grid"></div>
@@ -161,7 +179,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
   </div></div>
 </div>
 <script>
-const canvas=document.getElementById('game-canvas'),ctx=canvas.getContext('2d'),GAME_W=480,GAME_H=400;
+const canvas=document.getElementById('game-canvas'),ctx=canvas.getContext('2d'),GAME_W=480,GAME_H=400,crtFrame=document.getElementById('crt-frame');
 /* RenderContext: thin, chainable wrapper over Canvas2D.
    Each method returns `this` so draw calls can be fluent. Style args are
    optional -- pass a color/width to set state before drawing, or omit to
@@ -200,8 +218,41 @@ class RenderContext{
   stroke(color,lw){if(color!==undefined)this.ctx.strokeStyle=color;if(lw!==undefined)this.ctx.lineWidth=lw;this.ctx.stroke();return this;}
 }
 const render=new RenderContext(canvas);
-function resizeCanvas(){const vp=document.getElementById('game-viewport');if(!vp)return;const vw=vp.clientWidth,vh=vp.clientHeight,scale=Math.min(vw/GAME_W,vh/GAME_H);canvas.style.width=Math.floor(GAME_W*scale)+'px';canvas.style.height=Math.floor(GAME_H*scale)+'px';}
+/* Size the aspect-ratio-locked CRT frame to the largest integer multiple of
+   the native GAME_W x GAME_H that fits the viewport (minus the small padding).
+   Canvas fills 100% of the frame via CSS, so the lock is enforced once here. */
+function resizeCanvas(){
+  const vp=document.getElementById('game-viewport');if(!vp||!crtFrame)return;
+  const cs=getComputedStyle(vp),px=parseFloat(cs.paddingLeft)+parseFloat(cs.paddingRight),py=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom);
+  const vw=Math.max(0,vp.clientWidth-px),vh=Math.max(0,vp.clientHeight-py);
+  if(vw<=0||vh<=0)return;
+  const scale=Math.min(vw/GAME_W,vh/GAME_H);
+  const w=Math.max(1,Math.floor(GAME_W*scale)),h=Math.max(1,Math.floor(GAME_H*scale));
+  crtFrame.style.width=w+'px';crtFrame.style.height=h+'px';
+}
 window.addEventListener('resize',resizeCanvas);
+window.addEventListener('orientationchange',resizeCanvas);
+if(typeof ResizeObserver!=='undefined'){
+  const ro=new ResizeObserver(resizeCanvas);
+  const vp=document.getElementById('game-viewport');if(vp)ro.observe(vp);
+}
+document.addEventListener('DOMContentLoaded',resizeCanvas);
+resizeCanvas();
+/* Fullscreen — request on the cabinet so the marquee/deck stay in-frame. */
+function toggleFullscreen(){
+  const el=document.getElementById('cabinet')||document.documentElement;
+  if(!document.fullscreenElement){
+    (el.requestFullscreen||el.webkitRequestFullscreen||(()=>{})).call(el);
+  }else{
+    (document.exitFullscreen||document.webkitExitFullscreen||(()=>{})).call(document);
+  }
+}
+document.addEventListener('fullscreenchange',resizeCanvas);
+document.addEventListener('webkitfullscreenchange',resizeCanvas);
+/* CRT overlay on/off — persisted. Defaults to on. */
+function applyCRT(on){document.body.classList.toggle('crt-off',!on);const btn=document.getElementById('crt-btn');if(btn)btn.style.opacity=on?'1':'0.5';}
+function toggleCRT(){const on=document.body.classList.contains('crt-off');applyCRT(on);try{localStorage.setItem('qt-crt',on?'1':'0');}catch(e){}}
+(function(){try{applyCRT(localStorage.getItem('qt-crt')!=='0');}catch(e){applyCRT(true);}})();
 (function(){const env=document.getElementById('disco-env');for(let i=0;i<25;i++){const d=document.createElement('div');d.className='disco-dot';d.style.left=Math.random()*100+'%';d.style.top=Math.random()*100+'%';d.style.setProperty('--dur',(3+Math.random()*5)+'s');d.style.setProperty('--delay',(Math.random()*5)+'s');d.style.setProperty('--peak',(0.12+Math.random()*0.25).toFixed(2));env.appendChild(d);}})();
 let synth,delay,reverb,mainVol,audioReady=false;
 const KEYS=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
