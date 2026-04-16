@@ -1,7 +1,7 @@
 {
-  "name": "@quarter-tone/core",
+  "name": "@quarter-tone/audio",
   "version": "0.1.0",
-  "description": "Core music theory (ScaleMapper) and arcade game modules for Quarter Tone.",
+  "description": "Tone.js audio engine + SynthMapper bridge for the Quarter Tone arcade.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -16,17 +16,13 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./scale-mapper": {
-      "types": "./dist/scale-mapper.d.ts",
-      "import": "./dist/scale-mapper.js"
+    "./synth-mapper": {
+      "types": "./dist/synth-mapper.d.ts",
+      "import": "./dist/synth-mapper.js"
     },
-    "./input-manager": {
-      "types": "./dist/input-manager.d.ts",
-      "import": "./dist/input-manager.js"
-    },
-    "./games": {
-      "types": "./dist/games/index.d.ts",
-      "import": "./dist/games/index.js"
+    "./tone-types": {
+      "types": "./dist/tone-types.d.ts",
+      "import": "./dist/tone-types.js"
     },
     "./package.json": "./package.json"
   },
@@ -38,6 +34,17 @@
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@quarter-tone/core": "*"
+  },
+  "peerDependencies": {
+    "tone": ">=14.0.0 <16"
+  },
+  "peerDependenciesMeta": {
+    "tone": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@vitest/coverage-v8": "^1.6.0",
     "typescript": "^5.4.5",
@@ -47,11 +54,11 @@
     "access": "public"
   },
   "keywords": [
-    "music",
-    "scale",
-    "arcade",
-    "games",
+    "tone",
+    "tone.js",
     "synth",
+    "audio",
+    "polysynth",
     "quarter-tone"
   ]
 }
