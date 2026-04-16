@@ -244,14 +244,57 @@
   text-shadow: 0 0 4px rgba(34,238,255,0.3);
 }
 
-/* Responsive — tighten chrome on narrow viewports -------------------------- */
+/* Responsive — three-tier breakpoint system for cabinet chrome ------------- *
+ *   Desktop  (>=1024px) uses the defaults above (28px bezels, 52px marquee,
+ *                       40px deck).
+ *   Tablet   (601-1023px) trims bezels to 20px and scales the deck/marquee.
+ *   Mobile   (<=600px)   uses minimal 10px bezels, hides decorative grills,
+ *                        and makes the control deck horizontally scrollable
+ *                        so every hint-key stays reachable.
+ *   Short-landscape phones additionally shrink vertical chrome so the game
+ *   viewport keeps enough height to play.
+ * -------------------------------------------------------------------------- */
+
+/* TABLET */
+@media (max-width: 1023px) and (min-width: 601px) {
+  .side-bezel                         { width: 20px; }
+  .side-bezel::after                  { top: 14px; bottom: 14px; width: 3px; }
+  #marquee                            { height: 46px; padding: 0 12px; }
+  #marquee::before,
+  #marquee::after                     { width: 40px; top: 6px; bottom: 6px; }
+  .marquee-title                      { font-size: 16px; letter-spacing: 2px; margin-left: 44px; }
+  .marquee-game                       { font-size: 8px; margin-left: 12px; }
+  .marquee-right                      { margin-right: 44px; gap: 7px; }
+  .marquee-score                      { font-size: 9px; }
+  .m-btn                              { font-size: 6px; padding: 4px 7px; }
+  #control-deck                       { height: 36px; padding: 0 24px; gap: 12px; font-size: 6px; }
+}
+
+/* MOBILE */
 @media (max-width: 600px) {
+  .side-bezel                         { width: 10px; }
+  .side-bezel::after                  { display: none; }
   #marquee                            { height: 40px; padding: 0 8px; }
   #marquee::before,
   #marquee::after                     { display: none; }
-  .marquee-title                      { font-size: 14px; margin-left: 20px; }
-  .marquee-game                       { font-size: 7px; }
-  .marquee-right                      { margin-right: 20px; }
-  .side-bezel                         { width: 12px; }
-  #control-deck                       { height: 32px; padding: 0 14px; gap: 8px; font-size: 6px; }
+  .marquee-title                      { font-size: 13px; letter-spacing: 1px; margin-left: 6px; }
+  .marquee-game                       { font-size: 6px; margin-left: 8px; }
+  .marquee-right                      { margin-right: 6px; gap: 5px; }
+  .marquee-score                      { font-size: 7px; }
+  .m-btn                              { font-size: 5px; padding: 3px 5px; }
+  #control-deck                       {
+    height: 32px; padding: 0 10px; gap: 8px; font-size: 5px;
+    overflow-x: auto; overflow-y: hidden;
+    white-space: nowrap; scrollbar-width: none;
+  }
+  #control-deck::-webkit-scrollbar    { display: none; }
+  #control-deck > span                { flex-shrink: 0; }
+}
+
+/* LANDSCAPE / SHORT VIEWPORTS — trim vertical chrome */
+@media (max-height: 480px) and (orientation: landscape) {
+  #marquee                            { height: 36px; }
+  .marquee-title                      { font-size: 14px; }
+  #control-deck                       { height: 28px; font-size: 6px; }
+  .side-bezel                         { width: 14px; }
 }
