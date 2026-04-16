@@ -63,9 +63,9 @@ describe('ScaleMapper — construction', () => {
   });
 
   it('rejects unknown scales', () => {
-    expect(() =>
-      new ScaleMapper({ scale: 'Bogus' as unknown as ScaleName }),
-    ).toThrow(/Unknown scale/);
+    expect(() => new ScaleMapper({ scale: 'Bogus' as unknown as ScaleName })).toThrow(
+      /Unknown scale/,
+    );
   });
 });
 

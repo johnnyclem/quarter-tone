@@ -1,7 +1,19 @@
 import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
 
-interface Bullet { x: number; y: number; vx: number; vy: number; life: number; }
-interface Asteroid { x: number; y: number; vx: number; vy: number; r: number; }
+interface Bullet {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+}
+interface Asteroid {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  r: number;
+}
 
 export const createAsteroids: GameFactory = (deps: GameDeps): Game => {
   const rng = deps.random ?? Math.random;

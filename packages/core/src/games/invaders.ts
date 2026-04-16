@@ -1,7 +1,16 @@
 import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
 
-interface Enemy { x: number; y: number; alive: boolean; w: number; h: number; }
-interface Bullet { x: number; y: number; }
+interface Enemy {
+  x: number;
+  y: number;
+  alive: boolean;
+  w: number;
+  h: number;
+}
+interface Bullet {
+  x: number;
+  y: number;
+}
 
 export const createInvaders: GameFactory = (deps: GameDeps): Game => {
   const rng = deps.random ?? Math.random;

@@ -8,7 +8,10 @@ interface Enemy {
   diving: boolean;
   da: number;
 }
-interface Bullet { x: number; y: number; }
+interface Bullet {
+  x: number;
+  y: number;
+}
 
 export const createGalaga: GameFactory = (deps: GameDeps): Game => {
   const rng = deps.random ?? Math.random;

@@ -8,12 +8,32 @@ interface Piece {
 
 const SHAPES: number[][][] = [
   [[1, 1, 1, 1]],
-  [[1, 1], [1, 1]],
-  [[0, 1, 0], [1, 1, 1]],
-  [[1, 0], [1, 0], [1, 1]],
-  [[0, 1], [0, 1], [1, 1]],
-  [[1, 1, 0], [0, 1, 1]],
-  [[0, 1, 1], [1, 1, 0]],
+  [
+    [1, 1],
+    [1, 1],
+  ],
+  [
+    [0, 1, 0],
+    [1, 1, 1],
+  ],
+  [
+    [1, 0],
+    [1, 0],
+    [1, 1],
+  ],
+  [
+    [0, 1],
+    [0, 1],
+    [1, 1],
+  ],
+  [
+    [1, 1, 0],
+    [0, 1, 1],
+  ],
+  [
+    [0, 1, 1],
+    [1, 1, 0],
+  ],
 ];
 const COLORS = ['#22eeff', '#ffaa22', '#b829dd', '#ff2d95', '#44ff88', '#ff6644', '#ff2d95'];
 
@@ -56,8 +76,9 @@ export const createTetris: GameFactory = (deps: GameDeps): Game => {
     state.cols = 10;
     state.rows = 20;
     state.cw = 20;
-    state.grid = Array.from({ length: state.rows }, () =>
-      Array(state.cols).fill(0) as (string | 0)[],
+    state.grid = Array.from(
+      { length: state.rows },
+      () => Array(state.cols).fill(0) as (string | 0)[],
     );
     state.tick = 0;
     state.ds = 30;
@@ -72,7 +93,10 @@ export const createTetris: GameFactory = (deps: GameDeps): Game => {
       for (let c = 0; c < state.piece.shape[r].length; c++) {
         if (!state.piece.shape[r][c]) continue;
         const ny = state.py + r;
-        if (ny < 0) { init(); return; }
+        if (ny < 0) {
+          init();
+          return;
+        }
         state.grid[ny][state.px + c] = state.piece.color;
       }
     }
@@ -96,15 +120,15 @@ export const createTetris: GameFactory = (deps: GameDeps): Game => {
   };
 
   const onKey = (k: string) => {
-    if ((k === 'ArrowLeft' || k === 'a') && !col(state.px - 1, state.py, state.piece.shape)) state.px--;
-    if ((k === 'ArrowRight' || k === 'd') && !col(state.px + 1, state.py, state.piece.shape)) state.px++;
+    if ((k === 'ArrowLeft' || k === 'a') && !col(state.px - 1, state.py, state.piece.shape))
+      state.px--;
+    if ((k === 'ArrowRight' || k === 'd') && !col(state.px + 1, state.py, state.piece.shape))
+      state.px++;
     if (k === 'ArrowDown' || k === 's') {
       if (!col(state.px, state.py + 1, state.piece.shape)) state.py++;
     }
     if (k === 'ArrowUp' || k === 'w') {
-      const rot = state.piece.shape[0].map((_, i) =>
-        state.piece.shape.map((r) => r[i]).reverse(),
-      );
+      const rot = state.piece.shape[0].map((_, i) => state.piece.shape.map((r) => r[i]).reverse());
       if (!col(state.px, state.py, rot)) {
         state.piece.shape = rot;
         deps.playNote(5);

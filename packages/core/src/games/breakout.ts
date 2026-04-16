@@ -46,7 +46,8 @@ export const createBreakout: GameFactory = (deps: GameDeps): Game => {
 
   const update = () => {
     if (deps.keys['ArrowLeft'] || deps.keys['a']) state.padX = Math.max(0, state.padX - 6);
-    if (deps.keys['ArrowRight'] || deps.keys['d']) state.padX = Math.min(W - state.padW, state.padX + 6);
+    if (deps.keys['ArrowRight'] || deps.keys['d'])
+      state.padX = Math.min(W - state.padW, state.padX + 6);
     const b = state.ball;
     b.x += b.vx;
     b.y += b.vy;
