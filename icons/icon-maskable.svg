@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Maskable icon: art is constrained inside the safe zone (centred 80% circle).
+     Outside the safe zone we just paint the background colour so the platform
+     can crop to any shape (squircle, circle, rounded rect) without clipping
+     anything important. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Quarter Tone">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="80%">
+      <stop offset="0%" stop-color="#2a1457"/>
+      <stop offset="60%" stop-color="#1a0f2e"/>
+      <stop offset="100%" stop-color="#0d0815"/>
+    </radialGradient>
+    <linearGradient id="screen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0a0612"/>
+      <stop offset="100%" stop-color="#160a26"/>
+    </linearGradient>
+    <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowAmber" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Full bleed background (outside safe zone gets cropped) -->
+  <rect width="512" height="512" fill="url(#bg)"/>
+
+  <!-- Safe-zone art: 80% inscribed circle, ~ x:51..461, y:51..461 -->
+  <!-- Marquee bar -->
+  <rect x="120" y="146" width="272" height="40" rx="6" fill="#1e1235" stroke="#ff2d95" stroke-width="3" filter="url(#glowPink)"/>
+  <text x="256" y="174" text-anchor="middle" font-family="'Righteous','Arial Black',sans-serif" font-size="22" fill="#ffffff" letter-spacing="3">QUARTER TONE</text>
+
+  <!-- Screen -->
+  <rect x="136" y="200" width="240" height="160" rx="10" fill="url(#screen)" stroke="#b829dd" stroke-width="3"/>
+
+  <!-- Quarter note centred in the screen -->
+  <g filter="url(#glowAmber)" transform="translate(208 218)">
+    <rect x="56" y="0" width="8" height="100" fill="#ffaa22"/>
+    <ellipse cx="34" cy="102" rx="28" ry="20" fill="#ffaa22" transform="rotate(-18 34 102)"/>
+    <path d="M64 0 C 96 14, 102 44, 70 56" stroke="#ffaa22" stroke-width="8" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Control deck -->
+  <rect x="120" y="378" width="272" height="36" rx="6" fill="#1e1235" stroke="#b829dd" stroke-width="3"/>
+  <circle cx="160" cy="396" r="9" fill="#ff2d95"/>
+  <circle cx="190" cy="396" r="9" fill="#ffaa22"/>
+  <circle cx="220" cy="396" r="9" fill="#22eeff"/>
+  <rect x="252" y="388" width="118" height="16" rx="3" fill="#0a0612" stroke="#22eeff" stroke-width="2"/>
+</svg>

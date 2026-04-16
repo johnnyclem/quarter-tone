@@ -104,6 +104,12 @@ dist
 # vitepress cache directory
 **/.vitepress/cache
 
+# Playwright artifacts
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/blob-report/
+
 # Docusaurus cache and generated files
 .docusaurus
 
@@ -137,3 +143,7 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Vercel
+.vercel
+
