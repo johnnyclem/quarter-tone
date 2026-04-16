@@ -1,0 +1,15 @@
+{
+  "name": "quarter-tone-workspace",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Quarter Tone arcade — root workspace.",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm -w @quarter-tone/core run build",
+    "test": "npm -w @quarter-tone/core run test",
+    "test:coverage": "npm -w @quarter-tone/core run test:coverage",
+    "typecheck": "npm -w @quarter-tone/core run typecheck"
+  }
+}
