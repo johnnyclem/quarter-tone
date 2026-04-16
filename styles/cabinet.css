@@ -1,0 +1,294 @@
+/* -----------------------------------------------------------------------------
+ * Quarter Tone — Arcade cabinet bezel chrome
+ *
+ * CSS layout for the synthwave arcade cabinet framing that surrounds the game
+ * viewport. Implements three bezel regions that together form the cabinet
+ * "chrome":
+ *
+ *   ┌─────────────────────────────────────────────────┐
+ *   │                    MARQUEE                      │  top bezel
+ *   ├──────┬───────────────────────────────────┬──────┤
+ *   │      │                                   │      │
+ *   │ side │           GAME VIEWPORT           │ side │  screen region
+ *   │  art │        (scanlines + vignette)     │  art │
+ *   │      │                                   │      │
+ *   ├──────┴───────────────────────────────────┴──────┤
+ *   │                 CONTROL DECK                    │  bottom bezel
+ *   └─────────────────────────────────────────────────┘
+ *
+ * DOM layout expected by this stylesheet (matches the prototype):
+ *
+ *   #cabinet                            flex column, 100vw × 100vh
+ *     ├── #marquee                      52px fixed height
+ *     ├── #screen-wrap                  flex: 1
+ *     │     ├── .side-bezel.left        28px fixed width
+ *     │     ├── #game-viewport          flex: 1 (hosts #game-canvas)
+ *     │     └── .side-bezel.right       28px fixed width
+ *     └── #control-deck                 40px fixed height
+ *
+ * Palette / glow tokens are consumed from the :root custom properties declared
+ * alongside the cabinet (see index.html): --neon-pink, --neon-purple,
+ * --neon-amber, --neon-cyan, --bezel, --screen-bg, --text-dim, and the
+ * matching --glow-* values. No other external dependencies.
+ * -------------------------------------------------------------------------- */
+
+/* Cabinet shell ------------------------------------------------------------- */
+#cabinet {
+  display: none;
+  flex-direction: column;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+#cabinet.active {
+  display: flex;
+}
+
+/* Marquee — top bezel with title, current game, score, and menu buttons ---- */
+#marquee {
+  flex-shrink: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(180deg, #2c1050 0%, #1a0a35 30%, var(--bezel) 100%);
+  border-bottom: 3px solid var(--neon-pink);
+  box-shadow:
+    0 3px 30px var(--glow-pink),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+/* Decorative vent-strip graphics on each end of the marquee. */
+#marquee::before,
+#marquee::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  width: 60px;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 4px,
+    rgba(255, 45, 149, 0.15) 4px,
+    rgba(255, 45, 149, 0.15) 5px
+  );
+}
+#marquee::before {
+  left: 12px;
+}
+#marquee::after {
+  right: 12px;
+}
+
+.marquee-title {
+  font-family: 'Righteous', cursive;
+  font-size: 20px;
+  color: #fff;
+  letter-spacing: 3px;
+  margin-left: 80px;
+  text-shadow:
+    0 0 8px var(--neon-pink),
+    0 0 20px rgba(255, 45, 149, 0.5);
+}
+.marquee-game {
+  font-size: 10px;
+  color: var(--neon-amber);
+  margin-left: 20px;
+  text-shadow: 0 0 8px var(--glow-amber);
+}
+.marquee-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  margin-right: 80px;
+}
+.marquee-score {
+  font-size: 10px;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px rgba(34, 238, 255, 0.5);
+}
+.m-btn {
+  background: none;
+  border: 1px solid var(--neon-purple);
+  color: var(--neon-purple);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  box-shadow: 0 0 6px var(--glow-purple);
+  transition: all 0.15s;
+}
+.m-btn:hover {
+  background: rgba(184, 41, 221, 0.2);
+  box-shadow: 0 0 14px var(--glow-purple);
+}
+
+/* Screen + side art -------------------------------------------------------- */
+#screen-wrap {
+  flex: 1;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+}
+
+.side-bezel {
+  flex-shrink: 0;
+  width: 28px;
+  position: relative;
+  z-index: 5;
+  background: linear-gradient(180deg, var(--bezel) 0%, #0e0820 50%, var(--bezel) 100%);
+}
+/* Perforated highlight stripe running vertically along the inner edge. */
+.side-bezel::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  width: 4px;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 45, 149, 0.1) 0px,
+    rgba(255, 45, 149, 0.1) 2px,
+    rgba(184, 41, 221, 0.08) 2px,
+    rgba(184, 41, 221, 0.08) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+}
+.side-bezel.left::after {
+  right: 6px;
+}
+.side-bezel.right::after {
+  left: 6px;
+}
+.side-bezel.left {
+  border-right: 1px solid rgba(184, 41, 221, 0.2);
+  box-shadow: 2px 0 15px rgba(184, 41, 221, 0.08);
+}
+.side-bezel.right {
+  border-left: 1px solid rgba(184, 41, 221, 0.2);
+  box-shadow: -2px 0 15px rgba(184, 41, 221, 0.08);
+}
+
+#game-viewport {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: var(--screen-bg);
+}
+#game-canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+/* CRT vignette on the viewport edge. */
+#game-viewport::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(184, 41, 221, 0.08);
+  box-shadow:
+    inset 0 0 100px rgba(0, 0, 0, 0.6),
+    inset 0 0 30px rgba(184, 41, 221, 0.04);
+  pointer-events: none;
+  z-index: 7;
+}
+/* CRT scanline overlay. */
+#game-viewport::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.05) 2px,
+    rgba(0, 0, 0, 0.05) 4px
+  );
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* Control deck — bottom bezel with keyboard hint strip --------------------- */
+#control-deck {
+  flex-shrink: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 40px;
+  font-size: 7px;
+  color: var(--text-dim);
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(0deg, #2c1050 0%, var(--bezel) 100%);
+  border-top: 3px solid var(--neon-purple);
+  box-shadow: 0 -3px 20px var(--glow-purple);
+}
+/* Colored tape strip across the front of the deck. */
+#control-deck::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 5px;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  border-radius: 2px;
+  opacity: 0.5;
+  background: linear-gradient(
+    90deg,
+    var(--neon-pink) 0%,
+    var(--neon-pink) 15%,
+    transparent 15%,
+    transparent 35%,
+    var(--neon-amber) 35%,
+    var(--neon-amber) 50%,
+    transparent 50%,
+    transparent 70%,
+    var(--neon-cyan) 70%,
+    var(--neon-cyan) 85%,
+    transparent 85%
+  );
+}
+.hint-key {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 4px rgba(34, 238, 255, 0.3);
+}
+
+/* Responsive — tighten chrome on narrow viewports -------------------------- */
+@media (max-width: 600px) {
+  #marquee {
+    height: 40px;
+    padding: 0 8px;
+  }
+  #marquee::before,
+  #marquee::after {
+    display: none;
+  }
+  .marquee-title {
+    font-size: 14px;
+    margin-left: 20px;
+  }
+  .marquee-game {
+    font-size: 7px;
+  }
+  .marquee-right {
+    margin-right: 20px;
+  }
+  .side-bezel {
+    width: 12px;
+  }
+  #control-deck {
+    height: 32px;
+    padding: 0 14px;
+    gap: 8px;
+    font-size: 6px;
+  }
+}

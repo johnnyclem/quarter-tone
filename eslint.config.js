@@ -19,6 +19,9 @@ export default tseslint.config(
       'index.html',
       'src/scaleMapper.js',
       'tests/scaleMapper.test.js',
+      // Service worker uses a service-worker global scope (self, importScripts)
+      // and is authored/minified outside the TS/React tree.
+      'sw.js',
     ],
   },
 
@@ -81,6 +84,14 @@ export default tseslint.config(
       globals: {
         ...globals.node,
       },
+    },
+  },
+
+  // Test fakes intentionally alias `this` to mirror Tone.js's call semantics.
+  {
+    files: ['packages/audio/tests/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-this-alias': 'off',
     },
   },
 
