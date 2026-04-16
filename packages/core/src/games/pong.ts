@@ -25,7 +25,8 @@ export const createPong: GameFactory = (deps: GameDeps): Game => {
   const update = () => {
     const b = state.ball;
     if (deps.keys['ArrowUp'] || deps.keys['w']) state.padY = Math.max(0, state.padY - 5);
-    if (deps.keys['ArrowDown'] || deps.keys['s']) state.padY = Math.min(H - state.padH, state.padY + 5);
+    if (deps.keys['ArrowDown'] || deps.keys['s'])
+      state.padY = Math.min(H - state.padH, state.padY + 5);
     state.cpuY += (b.y - state.cpuY - state.padH / 2) * 0.06;
     state.cpuY = Math.max(0, Math.min(H - state.padH, state.cpuY));
     b.x += b.vx;

@@ -77,9 +77,9 @@ describe('createSynthStore — defaults', () => {
   });
 
   it('rejects unknown scales in the seed', () => {
-    expect(() =>
-      createSynthStore({ scale: 'Klingon' as unknown as ScaleName }),
-    ).toThrow(/Unknown scale/);
+    expect(() => createSynthStore({ scale: 'Klingon' as unknown as ScaleName })).toThrow(
+      /Unknown scale/,
+    );
   });
 });
 
@@ -136,15 +136,11 @@ describe('knob cycles', () => {
     const store = createSynthStore({ attackIdx: 0, releaseIdx: 0 });
     for (let i = 1; i <= ATTACKS.length; i++) {
       store.getState().cycleAttack();
-      expect(selectAttack(store.getState())).toBe(
-        ATTACKS[i % ATTACKS.length],
-      );
+      expect(selectAttack(store.getState())).toBe(ATTACKS[i % ATTACKS.length]);
     }
     for (let i = 1; i <= RELEASES.length; i++) {
       store.getState().cycleRelease();
-      expect(selectRelease(store.getState())).toBe(
-        RELEASES[i % RELEASES.length],
-      );
+      expect(selectRelease(store.getState())).toBe(RELEASES[i % RELEASES.length]);
     }
   });
 });

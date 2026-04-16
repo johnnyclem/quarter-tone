@@ -29,16 +29,16 @@ export {
 
 /** Ordered catalogue of every built-in game factory. */
 export const GAME_FACTORIES: ReadonlyArray<{ id: string; factory: GameFactory }> = [
-  { id: 'pong',      factory: createPong },
-  { id: 'breakout',  factory: createBreakout },
-  { id: 'snake',     factory: createSnake },
-  { id: 'invaders',  factory: createInvaders },
-  { id: 'tetris',    factory: createTetris },
+  { id: 'pong', factory: createPong },
+  { id: 'breakout', factory: createBreakout },
+  { id: 'snake', factory: createSnake },
+  { id: 'invaders', factory: createInvaders },
+  { id: 'tetris', factory: createTetris },
   { id: 'sequencer', factory: createSequencer },
-  { id: 'kong',      factory: createKong },
-  { id: 'kongjr',    factory: createKongJr },
-  { id: 'ghost',     factory: createGhost },
-  { id: 'galaga',    factory: createGalaga },
-  { id: 'frogger',   factory: createFrogger },
+  { id: 'kong', factory: createKong },
+  { id: 'kongjr', factory: createKongJr },
+  { id: 'ghost', factory: createGhost },
+  { id: 'galaga', factory: createGalaga },
+  { id: 'frogger', factory: createFrogger },
   { id: 'asteroids', factory: createAsteroids },
 ];

@@ -17,7 +17,7 @@
  * real `Tone` global.
  */
 
-import { ScaleMapper } from '@quarter-tone/core';
+import type { ScaleMapper } from '@quarter-tone/core';
 import type {
   ToneFeedbackDelay,
   ToneLib,
@@ -121,11 +121,7 @@ export class SynthMapper {
   private started = false;
   private disposed = false;
 
-  constructor(
-    scaleMapper: ScaleMapper,
-    tone: ToneLib,
-    options: SynthMapperOptions = {},
-  ) {
+  constructor(scaleMapper: ScaleMapper, tone: ToneLib, options: SynthMapperOptions = {}) {
     this.scaleMapper = scaleMapper;
     this.tone = tone;
     this.state = { ...DEFAULTS, ...options };

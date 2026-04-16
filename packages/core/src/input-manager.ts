@@ -54,15 +54,15 @@ export type KeyBindings = Record<InputAction, readonly string[]>;
  * Shift or CapsLock doesn't block play.
  */
 export const DEFAULT_BINDINGS: KeyBindings = {
-  up:         ['ArrowUp',    'w', 'W'],
-  down:       ['ArrowDown',  's', 'S'],
-  left:       ['ArrowLeft',  'a', 'A'],
-  right:      ['ArrowRight', 'd', 'D'],
-  fire:       [' ',          'Space'],
-  menu:       ['Tab'],
-  cycleScale: ['q',          'Q'],
-  saveA:      ['a',          'A'],
-  saveS:      ['s',          'S'],
+  up: ['ArrowUp', 'w', 'W'],
+  down: ['ArrowDown', 's', 'S'],
+  left: ['ArrowLeft', 'a', 'A'],
+  right: ['ArrowRight', 'd', 'D'],
+  fire: [' ', 'Space'],
+  menu: ['Tab'],
+  cycleScale: ['q', 'Q'],
+  saveA: ['a', 'A'],
+  saveS: ['s', 'S'],
 };
 
 /**
@@ -71,8 +71,13 @@ export const DEFAULT_BINDINGS: KeyBindings = {
  * DOM can iterate this set to decide whether to call `preventDefault()`.
  */
 export const RESERVED_KEYS: readonly string[] = [
-  'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-  ' ', 'Space', 'Tab',
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+  ' ',
+  'Space',
+  'Tab',
 ];
 
 /** Listener fired once per key transition for the action it subscribes to. */

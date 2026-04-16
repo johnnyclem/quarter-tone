@@ -365,7 +365,8 @@ describe('kong', () => {
     // Climb up by jumping while running right; eventually a barrel catches up
     // on a shared platform.
     for (let frame = 0; frame < 5000; frame++) {
-      if (frame % 40 === 0) h.press('ArrowUp'); else h.release('ArrowUp');
+      if (frame % 40 === 0) h.press('ArrowUp');
+      else h.release('ArrowUp');
       h.press('ArrowRight');
       g.update();
     }
@@ -493,7 +494,7 @@ describe('ghost', () => {
     const h = makeHarness();
     const g = createGhost(h.deps);
     g.init();
-    for (const k of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d']) {
+    for (const k of ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd']) {
       g.onKey?.(k, true);
     }
     expect(() => g.update()).not.toThrow();

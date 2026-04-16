@@ -19,8 +19,9 @@ export const createSequencer: GameFactory = (deps: GameDeps): Game => {
   const init = () => {
     state.cols = 16;
     state.rows = 8;
-    state.grid = Array.from({ length: state.rows }, () =>
-      Array(state.cols).fill(false) as boolean[],
+    state.grid = Array.from(
+      { length: state.rows },
+      () => Array(state.cols).fill(false) as boolean[],
     );
     state.step = 0;
     state.tick = 0;
@@ -44,7 +45,7 @@ export const createSequencer: GameFactory = (deps: GameDeps): Game => {
   const update = () => {
     state.tick++;
     const bpm = deps.getBpm();
-    const stp = Math.max(4, Math.floor((60 / bpm) * 60 / 4));
+    const stp = Math.max(4, Math.floor(((60 / bpm) * 60) / 4));
     if (state.playing && state.tick % stp === 0) {
       state.step = (state.step + 1) % state.cols;
       for (let r = 0; r < state.rows; r++) {
@@ -68,8 +69,12 @@ export const createSequencer: GameFactory = (deps: GameDeps): Game => {
         const x = ox + c * cw;
         const y = oy + r * ch;
         ctx.fillStyle = state.grid[r][c]
-          ? (c === state.step ? '#ff2d95' : '#b829dd')
-          : (c === state.step ? 'rgba(255,45,149,0.15)' : 'rgba(184,41,221,0.08)');
+          ? c === state.step
+            ? '#ff2d95'
+            : '#b829dd'
+          : c === state.step
+            ? 'rgba(255,45,149,0.15)'
+            : 'rgba(184,41,221,0.08)';
         ctx.fillRect(x + 1, y + 1, cw - 2, ch - 2);
         if (c === state.curX && r === state.curY) {
           ctx.strokeStyle = '#ffaa22';

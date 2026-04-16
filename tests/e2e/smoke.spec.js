@@ -113,10 +113,10 @@ test('title screen \u2192 game launch \u2192 audio plays', async ({ page }) => {
   // the game loop ticks. Give the rAF loop enough frames to produce at least
   // one bounce (~1.3s of simulation at 60fps for a default ball).
   await expect
-    .poll(
-      () => page.evaluate(() => window.__toneCalls?.length ?? 0),
-      { timeout: 8_000, intervals: [100, 250, 500] },
-    )
+    .poll(() => page.evaluate(() => window.__toneCalls?.length ?? 0), {
+      timeout: 8_000,
+      intervals: [100, 250, 500],
+    })
     .toBeGreaterThan(0);
 
   // The score counter wiring is also exercised once paddles get involved;

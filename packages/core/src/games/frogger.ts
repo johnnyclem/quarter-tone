@@ -1,7 +1,15 @@
 import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
 
-interface Car { x: number; w: number; }
-interface Lane { y: number; speed: number; cars: Car[]; isWater: boolean; }
+interface Car {
+  x: number;
+  w: number;
+}
+interface Lane {
+  y: number;
+  speed: number;
+  cars: Car[];
+  isWater: boolean;
+}
 
 export const createFrogger: GameFactory = (deps: GameDeps): Game => {
   const rng = deps.random ?? Math.random;

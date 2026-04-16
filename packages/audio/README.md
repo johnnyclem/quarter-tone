@@ -34,18 +34,18 @@ import { ScaleMapper } from '@quarter-tone/core';
 import { SynthMapper } from '@quarter-tone/audio';
 
 const mapper = new ScaleMapper({ key: 7, scale: 'Minor', octave: 4 });
-const synth  = new SynthMapper(mapper, Tone, {
-  wave:      'triangle',
-  delayWet:  0.3,
+const synth = new SynthMapper(mapper, Tone, {
+  wave: 'triangle',
+  delayWet: 0.3,
   reverbWet: 0.4,
-  volume:    0.7,
-  bpm:       120,
+  volume: 0.7,
+  bpm: 120,
 });
 
 // Unlock the AudioContext on a user gesture before playing:
 document.querySelector('#start')?.addEventListener('click', async () => {
   await synth.start();
-  synth.playNote(0);          // resolves to scale degree 0 → e.g. 'A3'
+  synth.playNote(0); // resolves to scale degree 0 → e.g. 'A3'
   synth.playChord([0, 2, 4]); // triad of the first, third, fifth degree
 });
 
@@ -61,28 +61,28 @@ synth.dispose();
 
 ## API
 
-| Member                                 | Description                                     |
-| -------------------------------------- | ----------------------------------------------- |
-| `new SynthMapper(scale, tone, opts?)`  | Build the chain; accepts an injected Tone lib.  |
-| `start()`                              | Resume the AudioContext (idempotent).           |
-| `playNote(index, duration?, vel?)`     | Trigger one scale-degree note.                  |
-| `playChord(indices, duration?, vel?)`  | Trigger multiple scale-degree notes at once.    |
-| `setWave(wave)`                        | `'sine' \| 'triangle' \| 'square' \| 'sawtooth'`|
-| `setAttack(sec)` / `setRelease(sec)`   | Envelope shaping.                               |
-| `setDelayWet(0..1)` / `setReverbWet(0..1)` | FX send amounts (auto-clamped).             |
-| `setVolume(0..1)`                      | Linear master gain (converted to dB).           |
-| `setBpm(bpm)`                          | Write `Tone.Transport.bpm`.                     |
-| `snapshot()`                           | Read-only view of current knob positions.       |
-| `dispose()`                            | Release voices and tear down nodes.             |
+| Member                                     | Description                                      |
+| ------------------------------------------ | ------------------------------------------------ |
+| `new SynthMapper(scale, tone, opts?)`      | Build the chain; accepts an injected Tone lib.   |
+| `start()`                                  | Resume the AudioContext (idempotent).            |
+| `playNote(index, duration?, vel?)`         | Trigger one scale-degree note.                   |
+| `playChord(indices, duration?, vel?)`      | Trigger multiple scale-degree notes at once.     |
+| `setWave(wave)`                            | `'sine' \| 'triangle' \| 'square' \| 'sawtooth'` |
+| `setAttack(sec)` / `setRelease(sec)`       | Envelope shaping.                                |
+| `setDelayWet(0..1)` / `setReverbWet(0..1)` | FX send amounts (auto-clamped).                  |
+| `setVolume(0..1)`                          | Linear master gain (converted to dB).            |
+| `setBpm(bpm)`                              | Write `Tone.Transport.bpm`.                      |
+| `snapshot()`                               | Read-only view of current knob positions.        |
+| `dispose()`                                | Release voices and tear down nodes.              |
 
 ## Scripts
 
-| Command                 | Description                         |
-| ----------------------- | ----------------------------------- |
-| `npm run build`         | Emit ESM + `.d.ts` into `dist/`.    |
-| `npm test`              | Run the Vitest suite.               |
-| `npm run test:coverage` | Run tests with v8 coverage.         |
-| `npm run typecheck`     | `tsc --noEmit`.                     |
+| Command                 | Description                      |
+| ----------------------- | -------------------------------- |
+| `npm run build`         | Emit ESM + `.d.ts` into `dist/`. |
+| `npm test`              | Run the Vitest suite.            |
+| `npm run test:coverage` | Run tests with v8 coverage.      |
+| `npm run typecheck`     | `tsc --noEmit`.                  |
 
 The package has a **peer dependency** on `tone@^14 || ^15`; consumers supply
 their own Tone.js at runtime. Tests inject a lightweight fake implementation
