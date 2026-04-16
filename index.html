@@ -43,6 +43,8 @@
 .insert-coin:hover{background:rgba(255,170,34,0.15);box-shadow:0 0 20px var(--glow-amber),inset 0 0 20px rgba(255,170,34,0.2)}
 @keyframes blink{50%{opacity:0}}
 
+/* Arcade cabinet bezel chrome (marquee, side art, control deck) lives in
+   styles/cabinet.css — loaded via the <link> below this <style>. */
 /* CABINET */
 #cabinet{display:none;width:100vw;height:100vh;flex-direction:column;position:relative}
 #cabinet.active{display:flex}
@@ -125,6 +127,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 @media(max-width:600px){.side-bezel{width:12px}#marquee{height:40px;padding:0 8px}.marquee-title{font-size:14px;margin-left:20px}.marquee-game{font-size:7px}.marquee-right{margin-right:20px}#marquee::before,#marquee::after{display:none}#control-deck{height:32px;padding:0 14px;gap:8px;font-size:6px}}
 
   </style>
+  <link rel="stylesheet" href="styles/cabinet.css">
 </head>
 <body>
 <div id="disco-env"></div>
