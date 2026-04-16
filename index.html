@@ -3,8 +3,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover">
   <title>Quarter Tone</title>
+  <meta name="description" content="Classic arcade-inspired sequencers with an embedded synthesizer and drum machine.">
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#ff2d95">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+  <link rel="apple-touch-icon" href="./icons/icon.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Quarter Tone">
+  <meta name="mobile-web-app-capable" content="yes">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
   <!-- Plausible analytics: update data-domain to the deployed host -->
   <script defer data-domain="quarter-tone.app" src="https://plausible.io/js/script.js"></script>
@@ -329,6 +340,65 @@ function launchGame(id){const g=GAMES.find(gm=>gm.id===id);if(!g)return;currentG
 function gameFrame(){if(currentGame){currentGame.update();currentGame.draw();}requestAnimationFrame(gameFrame);}
 async function startArcade(){await initAudio();document.getElementById('title-screen').classList.add('hidden');document.getElementById('cabinet').classList.add('active');document.getElementById('synth-toggle').classList.add('active');buildMenu();resizeCanvas();gameFrame();analytics.startSession();}
 window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();});
+
+/* ---------------------------------------------------------------------------
+ * PWA: register the service worker so Quarter Tone boots offline after the
+ * first visit. The SW (sw.js) uses Workbox cache-first for assets and
+ * stale-while-revalidate for navigations.
+ *
+ * - Only registered when served over http(s) (skipped for `file://` opens).
+ * - Update flow: when a new SW is found and finishes installing, we surface
+ *   a "NEW VERSION ▶" tap target in the marquee that activates the waiting
+ *   worker and reloads the cabinet.
+ * ------------------------------------------------------------------------- */
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', { scope: './' }).then((reg) => {
+      const showUpdateAvailable = () => {
+        const right = document.querySelector('.marquee-right');
+        if (!right || document.getElementById('pwa-update-btn')) return;
+        const btn = document.createElement('button');
+        btn.id = 'pwa-update-btn';
+        btn.className = 'm-btn';
+        btn.title = 'A new version of Quarter Tone is available';
+        btn.textContent = 'NEW ▶';
+        btn.style.borderColor = 'var(--neon-amber)';
+        btn.style.color = 'var(--neon-amber)';
+        btn.style.boxShadow = '0 0 10px var(--glow-amber)';
+        btn.onclick = () => {
+          if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        };
+        right.insertBefore(btn, right.firstChild);
+      };
+
+      // A waiting worker on first load means an update was downloaded
+      // during a previous session.
+      if (reg.waiting && navigator.serviceWorker.controller) showUpdateAvailable();
+
+      reg.addEventListener('updatefound', () => {
+        const sw = reg.installing;
+        if (!sw) return;
+        sw.addEventListener('statechange', () => {
+          if (sw.state === 'installed' && navigator.serviceWorker.controller) {
+            // New SW installed alongside an existing controller → update ready.
+            showUpdateAvailable();
+          }
+        });
+      });
+    }).catch((err) => {
+      console.warn('[pwa] Service worker registration failed:', err);
+    });
+
+    // When the active SW changes (because SKIP_WAITING took effect), reload
+    // once so the new precached shell is used. Guarded to run at most once.
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (reloaded) return;
+      reloaded = true;
+      window.location.reload();
+    });
+  });
+}
 </script>
 </body>
 </html>
