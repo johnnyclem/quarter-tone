@@ -1,0 +1,10 @@
+**/dist/**
+**/build/**
+**/coverage/**
+**/node_modules/**
+**/.vite/**
+package-lock.json
+# Legacy monolith — formatted by hand until migrated into packages/app.
+index.html
+src/scaleMapper.js
+tests/scaleMapper.test.js

@@ -133,9 +133,7 @@ function clampBpm(v: number): number {
  * preview pane) can call this directly instead of importing the module
  * singleton.
  */
-export function createSynthStore(
-  initial: Partial<SynthState> = {},
-): SynthStore {
+export function createSynthStore(initial: Partial<SynthState> = {}): SynthStore {
   const seed: SynthState = { ...DEFAULT_SYNTH_STATE, ...initial };
   // Normalise caller-provided values so invariants hold from tick zero.
   seed.key = ((seed.key % 12) + 12) % 12;
@@ -145,10 +143,8 @@ export function createSynthStore(
   seed.waveIdx = ((seed.waveIdx % WAVES.length) + WAVES.length) % WAVES.length;
   seed.arpIdx = ((seed.arpIdx % ARPS.length) + ARPS.length) % ARPS.length;
   seed.octave = Math.max(MIN_OCTAVE, Math.min(MAX_OCTAVE, seed.octave | 0));
-  seed.attackIdx =
-    ((seed.attackIdx % ATTACKS.length) + ATTACKS.length) % ATTACKS.length;
-  seed.releaseIdx =
-    ((seed.releaseIdx % RELEASES.length) + RELEASES.length) % RELEASES.length;
+  seed.attackIdx = ((seed.attackIdx % ATTACKS.length) + ATTACKS.length) % ATTACKS.length;
+  seed.releaseIdx = ((seed.releaseIdx % RELEASES.length) + RELEASES.length) % RELEASES.length;
   seed.delayWet = clamp01(seed.delayWet);
   seed.reverbWet = clamp01(seed.reverbWet);
   seed.volume = clamp01(seed.volume);
@@ -164,8 +160,7 @@ export function createSynthStore(
       set({ scale: SCALE_NAMES[i] });
     },
 
-    cycleWave: () =>
-      set({ waveIdx: (get().waveIdx + 1) % WAVES.length }),
+    cycleWave: () => set({ waveIdx: (get().waveIdx + 1) % WAVES.length }),
 
     cycleArp: () => set({ arpIdx: (get().arpIdx + 1) % ARPS.length }),
 
@@ -174,11 +169,9 @@ export function createSynthStore(
       set({ octave: next });
     },
 
-    cycleAttack: () =>
-      set({ attackIdx: (get().attackIdx + 1) % ATTACKS.length }),
+    cycleAttack: () => set({ attackIdx: (get().attackIdx + 1) % ATTACKS.length }),
 
-    cycleRelease: () =>
-      set({ releaseIdx: (get().releaseIdx + 1) % RELEASES.length }),
+    cycleRelease: () => set({ releaseIdx: (get().releaseIdx + 1) % RELEASES.length }),
 
     setDelay: (v: number) => set({ delayWet: clamp01(v) }),
     setReverb: (v: number) => set({ reverbWet: clamp01(v) }),

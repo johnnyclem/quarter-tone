@@ -54,7 +54,9 @@ export function makeHarness(overrides: Partial<GameDeps> = {}): Harness {
   const keys: Record<string, boolean> = {};
   let score = 0;
   const playNote = vi.fn();
-  const setScore = vi.fn((s: number) => { score = s; }) as ReturnType<typeof vi.fn>;
+  const setScore = vi.fn((s: number) => {
+    score = s;
+  }) as ReturnType<typeof vi.fn>;
   // Assignment above widens the Mock type so TS is happy with GameDeps.setScore's
   // broader (s: number) => void shape.
   const getScore = () => score;
@@ -74,9 +76,15 @@ export function makeHarness(overrides: Partial<GameDeps> = {}): Harness {
     playNote,
     setScore,
     getScore,
-    press: (...k: string[]) => { for (const key of k) keys[key] = true; },
-    release: (...k: string[]) => { for (const key of k) keys[key] = false; },
-    clearKeys: () => { for (const k of Object.keys(keys)) delete keys[k]; },
+    press: (...k: string[]) => {
+      for (const key of k) keys[key] = true;
+    },
+    release: (...k: string[]) => {
+      for (const key of k) keys[key] = false;
+    },
+    clearKeys: () => {
+      for (const k of Object.keys(keys)) delete keys[k];
+    },
     ctx: makeCtx(),
   };
 }

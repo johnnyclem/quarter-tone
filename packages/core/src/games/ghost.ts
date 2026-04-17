@@ -1,6 +1,12 @@
 import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
 
-interface Ghost { x: number; y: number; color: string; vx: number; vy: number; }
+interface Ghost {
+  x: number;
+  y: number;
+  color: string;
+  vx: number;
+  vy: number;
+}
 
 export const createGhost: GameFactory = (deps: GameDeps): Game => {
   const rng = deps.random ?? Math.random;
@@ -24,25 +30,25 @@ export const createGhost: GameFactory = (deps: GameDeps): Game => {
 
   const gm = (): number[][] => {
     const h = [
-      [1,1,1,1,1,1,1,1,1,1,1],
-      [1,0,0,0,0,0,0,0,0,0,1],
-      [1,0,1,1,0,1,1,1,0,1,1],
-      [1,0,0,0,0,0,0,0,0,0,0],
-      [1,0,1,1,0,1,0,1,1,1,1],
-      [1,0,0,0,0,1,0,0,0,0,1],
-      [1,1,1,1,0,1,1,1,0,1,1],
-      [1,1,1,1,0,1,0,0,0,0,0],
-      [1,1,1,1,0,0,0,1,1,0,1],
-      [0,0,0,0,0,1,0,0,0,0,1],
-      [1,1,1,1,0,1,0,1,1,1,1],
-      [1,1,1,1,0,1,0,0,0,0,0],
-      [1,1,1,1,0,0,0,1,1,0,1],
-      [1,0,0,0,0,0,0,0,0,0,1],
-      [1,0,1,1,0,1,1,1,0,0,0],
-      [1,0,0,1,0,0,0,0,0,1,1],
-      [1,1,0,1,0,1,1,1,0,1,1],
-      [1,0,0,0,0,0,0,0,0,0,1],
-      [1,1,1,1,1,1,1,1,1,1,1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+      [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1],
+      [1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1],
+      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+      [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1],
+      [1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0],
+      [1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1],
+      [1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
     return h.map((r) => {
       const right = [...r].reverse().slice(1);
@@ -104,10 +110,13 @@ export const createGhost: GameFactory = (deps: GameDeps): Game => {
       deps.setScore(deps.getScore() + 10);
     }
     for (const g of state.ghosts) {
-      const dirs = [{ x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 }];
-      const valid = dirs.filter((d) =>
-        cm(g.x, g.y, d.x, d.y) && !(d.x === -g.vx && d.y === -g.vy),
-      );
+      const dirs = [
+        { x: 1, y: 0 },
+        { x: -1, y: 0 },
+        { x: 0, y: 1 },
+        { x: 0, y: -1 },
+      ];
+      const valid = dirs.filter((d) => cm(g.x, g.y, d.x, d.y) && !(d.x === -g.vx && d.y === -g.vy));
       if (valid.length > 0) {
         valid.sort((a, b) => {
           const da = Math.abs(g.x + a.x - state.px) + Math.abs(g.y + a.y - state.py);
@@ -161,12 +170,11 @@ export const createGhost: GameFactory = (deps: GameDeps): Game => {
     ctx.arc(
       ox + state.px * state.cs + state.cs / 2,
       oy + state.py * state.cs + state.cs / 2,
-      8, 0.2, Math.PI * 2 - 0.2,
+      8,
+      0.2,
+      Math.PI * 2 - 0.2,
     );
-    ctx.lineTo(
-      ox + state.px * state.cs + state.cs / 2,
-      oy + state.py * state.cs + state.cs / 2,
-    );
+    ctx.lineTo(ox + state.px * state.cs + state.cs / 2, oy + state.py * state.cs + state.cs / 2);
     ctx.fill();
     for (const g of state.ghosts) {
       ctx.fillStyle = g.color;

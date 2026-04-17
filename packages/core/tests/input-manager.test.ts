@@ -10,9 +10,15 @@ import {
 describe('INPUT_ACTIONS / DEFAULT_BINDINGS', () => {
   it('exports every action in a stable list', () => {
     expect(INPUT_ACTIONS).toEqual([
-      'up', 'down', 'left', 'right',
-      'fire', 'menu', 'cycleScale',
-      'saveA', 'saveS',
+      'up',
+      'down',
+      'left',
+      'right',
+      'fire',
+      'menu',
+      'cycleScale',
+      'saveA',
+      'saveS',
     ]);
     expect(new Set(INPUT_ACTIONS).size).toBe(INPUT_ACTIONS.length);
   });
@@ -102,10 +108,14 @@ describe('InputManager — keyDown / keyUp / isPressed', () => {
   it('maps every default action to its keys', () => {
     const mgr = new InputManager();
     const cases: Array<[InputAction, string]> = [
-      ['up', 'ArrowUp'], ['up', 'w'],
-      ['down', 'ArrowDown'], ['down', 's'],
-      ['left', 'ArrowLeft'], ['left', 'a'],
-      ['right', 'ArrowRight'], ['right', 'd'],
+      ['up', 'ArrowUp'],
+      ['up', 'w'],
+      ['down', 'ArrowDown'],
+      ['down', 's'],
+      ['left', 'ArrowLeft'],
+      ['left', 'a'],
+      ['right', 'ArrowRight'],
+      ['right', 'd'],
       ['fire', ' '],
       ['menu', 'Tab'],
       ['cycleScale', 'q'],
@@ -180,10 +190,15 @@ describe('InputManager — listeners', () => {
   it('fires listeners with down / up transitions', () => {
     const mgr = new InputManager();
     const calls: Array<[boolean, string]> = [];
-    mgr.on('fire', (down, key) => { calls.push([down, key]); });
+    mgr.on('fire', (down, key) => {
+      calls.push([down, key]);
+    });
     mgr.keyDown(' ');
     mgr.keyUp(' ');
-    expect(calls).toEqual([[true, ' '], [false, ' ']]);
+    expect(calls).toEqual([
+      [true, ' '],
+      [false, ' '],
+    ]);
   });
 
   it('returns an unsubscribe function', () => {

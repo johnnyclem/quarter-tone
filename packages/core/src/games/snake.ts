@@ -1,6 +1,9 @@
 import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
 
-interface Cell { x: number; y: number; }
+interface Cell {
+  x: number;
+  y: number;
+}
 
 export const createSnake: GameFactory = (deps: GameDeps): Game => {
   const rng = deps.random ?? Math.random;
@@ -48,8 +51,13 @@ export const createSnake: GameFactory = (deps: GameDeps): Game => {
       x: state.snake[0].x + state.dir.x,
       y: state.snake[0].y + state.dir.y,
     };
-    if (h.x < 0 || h.x >= COLS || h.y < 0 || h.y >= ROWS ||
-        state.snake.some((s) => s.x === h.x && s.y === h.y)) {
+    if (
+      h.x < 0 ||
+      h.x >= COLS ||
+      h.y < 0 ||
+      h.y >= ROWS ||
+      state.snake.some((s) => s.x === h.x && s.y === h.y)
+    ) {
       deps.playNote(0);
       init();
       return;

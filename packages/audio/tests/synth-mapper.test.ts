@@ -4,13 +4,17 @@ import { SynthMapper } from '../src/synth-mapper.js';
 import { makeFakeTone, type FakeEvent } from './fake-tone.js';
 
 type EventOf<K extends FakeEvent['kind']> = Extract<FakeEvent, { kind: K }>;
-const isKind = <K extends FakeEvent['kind']>(k: K) =>
-  (e: FakeEvent): e is EventOf<K> => e.kind === k;
+const isKind =
+  <K extends FakeEvent['kind']>(k: K) =>
+  (e: FakeEvent): e is EventOf<K> =>
+    e.kind === k;
 
-function makeSubject(opts: {
-  mapper?: ScaleMapper;
-  options?: ConstructorParameters<typeof SynthMapper>[2];
-} = {}) {
+function makeSubject(
+  opts: {
+    mapper?: ScaleMapper;
+    options?: ConstructorParameters<typeof SynthMapper>[2];
+  } = {},
+) {
   const tone = makeFakeTone();
   const mapper = opts.mapper ?? new ScaleMapper({ key: 0, scale: 'Major', octave: 4 });
   const synth = new SynthMapper(mapper, tone, opts.options);

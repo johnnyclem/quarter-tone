@@ -1,7 +1,15 @@
 import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
 
-interface Vine { x: number; top: number; bottom: number; }
-interface Fruit { x: number; y: number; alive: boolean; }
+interface Vine {
+  x: number;
+  top: number;
+  bottom: number;
+}
+interface Fruit {
+  x: number;
+  y: number;
+  alive: boolean;
+}
 
 export const createKongJr: GameFactory = (deps: GameDeps): Game => {
   const rng = deps.random ?? Math.random;

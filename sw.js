@@ -20,16 +20,13 @@
  */
 
 const WB_VERSION = '7.1.0';
-importScripts(
-  `https://storage.googleapis.com/workbox-cdn/releases/${WB_VERSION}/workbox-sw.js`
-);
+importScripts(`https://storage.googleapis.com/workbox-cdn/releases/${WB_VERSION}/workbox-sw.js`);
 
 // Disable Workbox's verbose logging in production by default.
 // Toggle with `self.__WB_DISABLE_DEV_LOGS = false;` from DevTools if needed.
 self.__WB_DISABLE_DEV_LOGS = true;
 
-const { precaching, routing, strategies, expiration, cacheableResponse, core } =
-  workbox;
+const { precaching, routing, strategies, expiration, cacheableResponse, core } = workbox;
 
 // Bumping this string forces a brand-new precache and evicts the previous one.
 const APP_VERSION = 'v1';
@@ -67,8 +64,7 @@ precaching.cleanupOutdatedCaches();
 routing.registerRoute(
   ({ url, request }) =>
     request.destination === 'script' &&
-    (url.origin === 'https://cdnjs.cloudflare.com' ||
-      url.origin === 'https://unpkg.com'),
+    (url.origin === 'https://cdnjs.cloudflare.com' || url.origin === 'https://unpkg.com'),
   new strategies.CacheFirst({
     cacheName: `quarter-tone-cdn-scripts-${APP_VERSION}`,
     plugins: [
@@ -79,7 +75,7 @@ routing.registerRoute(
         purgeOnQuotaError: true,
       }),
     ],
-  })
+  }),
 );
 
 // Google Fonts stylesheet — cache-first (the URL is content-stable for a
@@ -95,7 +91,7 @@ routing.registerRoute(
         maxAgeSeconds: 60 * 60 * 24 * 365,
       }),
     ],
-  })
+  }),
 );
 
 // Google Fonts webfont files (woff2) — immutable, cache-first forever.
@@ -110,7 +106,7 @@ routing.registerRoute(
         maxAgeSeconds: 60 * 60 * 24 * 365,
       }),
     ],
-  })
+  }),
 );
 
 // Same-origin static assets (scripts, styles, workers) — cache-first.
@@ -128,14 +124,12 @@ routing.registerRoute(
         maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
       }),
     ],
-  })
+  }),
 );
 
 // Same-origin images / icons / fonts — cache-first.
 routing.registerRoute(
-  ({ request, sameOrigin }) =>
-    sameOrigin &&
-    ['image', 'font'].includes(request.destination),
+  ({ request, sameOrigin }) => sameOrigin && ['image', 'font'].includes(request.destination),
   new strategies.CacheFirst({
     cacheName: `quarter-tone-media-${APP_VERSION}`,
     plugins: [
@@ -145,7 +139,7 @@ routing.registerRoute(
         maxAgeSeconds: 60 * 60 * 24 * 60, // 60 days
       }),
     ],
-  })
+  }),
 );
 
 // ---------------------------------------------------------------------------
@@ -158,10 +152,8 @@ routing.registerRoute(
   ({ request }) => request.mode === 'navigate',
   new strategies.StaleWhileRevalidate({
     cacheName: `quarter-tone-pages-${APP_VERSION}`,
-    plugins: [
-      new cacheableResponse.CacheableResponsePlugin({ statuses: [0, 200] }),
-    ],
-  })
+    plugins: [new cacheableResponse.CacheableResponsePlugin({ statuses: [0, 200] })],
+  }),
 );
 
 // ---------------------------------------------------------------------------

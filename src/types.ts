@@ -17,14 +17,7 @@
 export type Waveform = 'sine' | 'triangle' | 'square' | 'sawtooth';
 
 /** Named scales supported by the synth. */
-export type ScaleName =
-  | 'Major'
-  | 'Minor'
-  | 'Penta'
-  | 'Blues'
-  | 'Dorian'
-  | 'Mixo'
-  | 'Phrygian';
+export type ScaleName = 'Major' | 'Minor' | 'Penta' | 'Blues' | 'Dorian' | 'Mixo' | 'Phrygian';
 
 /** Arpeggiator directions. */
 export type ArpMode = 'Up' | 'Down' | 'Bounce' | 'Random';
@@ -102,12 +95,7 @@ export interface FxEvent {
 }
 
 /** Discriminated union of every event a game can emit back to the host. */
-export type GameEvent =
-  | NoteEvent
-  | ChordEvent
-  | ScoreEvent
-  | ScoreDeltaEvent
-  | FxEvent;
+export type GameEvent = NoteEvent | ChordEvent | ScoreEvent | ScoreDeltaEvent | FxEvent;
 
 /* -------------------------------------------------------------------------- */
 /*  Host -> game API                                                          */

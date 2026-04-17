@@ -18,6 +18,7 @@ export const GAMES_MANIFEST = Object.freeze([
   { id: 'galaga',    name: 'Galaga Groove', emoji: '🚀', desc: 'Dive bomb sequences' },
   { id: 'frogger',   name: 'Frog Hop',      emoji: '🐸', desc: 'Rhythmic hopping across lanes' },
   { id: 'asteroids', name: 'Deep Spaced',   emoji: '☄️', desc: 'Shooting & collisions = arps' },
+  { id: 'outrun',    name: 'Outrun',        emoji: '🌴', desc: 'Master compressor / sunset drive' },
 ]);
 
 /**

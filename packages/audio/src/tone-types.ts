@@ -65,10 +65,7 @@ export type ToneSynthVoice = unknown;
 export interface ToneLib {
   start(): Promise<void>;
   Synth: ToneSynthVoice;
-  PolySynth: new (
-    voice: ToneSynthVoice,
-    options?: Record<string, unknown>,
-  ) => TonePolySynth;
+  PolySynth: new (voice: ToneSynthVoice, options?: Record<string, unknown>) => TonePolySynth;
   Reverb: new (options?: Record<string, unknown>) => ToneReverb;
   FeedbackDelay: new (options?: Record<string, unknown>) => ToneFeedbackDelay;
   Volume: new (db?: number) => ToneVolume;

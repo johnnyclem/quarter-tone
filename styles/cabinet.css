@@ -40,7 +40,9 @@
   width: 100vw;
   height: 100vh;
 }
-#cabinet.active { display: flex; }
+#cabinet.active {
+  display: flex;
+}
 
 /* Marquee — top bezel with title, current game, score, and menu buttons ---- */
 #marquee {
@@ -53,8 +55,9 @@
   z-index: 10;
   background: linear-gradient(180deg, #2c1050 0%, #1a0a35 30%, var(--bezel) 100%);
   border-bottom: 3px solid var(--neon-pink);
-  box-shadow: 0 3px 30px var(--glow-pink),
-              0 1px 0 rgba(255,255,255,0.05) inset;
+  box-shadow:
+    0 3px 30px var(--glow-pink),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
 }
 /* Decorative vent-strip graphics on each end of the marquee. */
 #marquee::before,
@@ -68,12 +71,16 @@
     0deg,
     transparent,
     transparent 4px,
-    rgba(255,45,149,0.15) 4px,
-    rgba(255,45,149,0.15) 5px
+    rgba(255, 45, 149, 0.15) 4px,
+    rgba(255, 45, 149, 0.15) 5px
   );
 }
-#marquee::before { left: 12px; }
-#marquee::after  { right: 12px; }
+#marquee::before {
+  left: 12px;
+}
+#marquee::after {
+  right: 12px;
+}
 
 .marquee-title {
   font-family: 'Righteous', cursive;
@@ -81,8 +88,9 @@
   color: #fff;
   letter-spacing: 3px;
   margin-left: 80px;
-  text-shadow: 0 0 8px var(--neon-pink),
-               0 0 20px rgba(255,45,149,0.5);
+  text-shadow:
+    0 0 8px var(--neon-pink),
+    0 0 20px rgba(255, 45, 149, 0.5);
 }
 .marquee-game {
   font-size: 10px;
@@ -100,7 +108,7 @@
 .marquee-score {
   font-size: 10px;
   color: var(--neon-cyan);
-  text-shadow: 0 0 8px rgba(34,238,255,0.5);
+  text-shadow: 0 0 8px rgba(34, 238, 255, 0.5);
 }
 .m-btn {
   background: none;
@@ -115,7 +123,7 @@
   transition: all 0.15s;
 }
 .m-btn:hover {
-  background: rgba(184,41,221,0.2);
+  background: rgba(184, 41, 221, 0.2);
   box-shadow: 0 0 14px var(--glow-purple);
 }
 
@@ -144,23 +152,27 @@
   width: 4px;
   background: repeating-linear-gradient(
     180deg,
-    rgba(255,45,149,0.1) 0px,
-    rgba(255,45,149,0.1) 2px,
-    rgba(184,41,221,0.08) 2px,
-    rgba(184,41,221,0.08) 6px,
+    rgba(255, 45, 149, 0.1) 0px,
+    rgba(255, 45, 149, 0.1) 2px,
+    rgba(184, 41, 221, 0.08) 2px,
+    rgba(184, 41, 221, 0.08) 6px,
     transparent 6px,
     transparent 12px
   );
 }
-.side-bezel.left::after  { right: 6px; }
-.side-bezel.right::after { left: 6px; }
+.side-bezel.left::after {
+  right: 6px;
+}
+.side-bezel.right::after {
+  left: 6px;
+}
 .side-bezel.left {
-  border-right: 1px solid rgba(184,41,221,0.2);
-  box-shadow: 2px 0 15px rgba(184,41,221,0.08);
+  border-right: 1px solid rgba(184, 41, 221, 0.2);
+  box-shadow: 2px 0 15px rgba(184, 41, 221, 0.08);
 }
 .side-bezel.right {
-  border-left: 1px solid rgba(184,41,221,0.2);
-  box-shadow: -2px 0 15px rgba(184,41,221,0.08);
+  border-left: 1px solid rgba(184, 41, 221, 0.2);
+  box-shadow: -2px 0 15px rgba(184, 41, 221, 0.08);
 }
 
 #game-viewport {
@@ -180,9 +192,10 @@
   content: '';
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(184,41,221,0.08);
-  box-shadow: inset 0 0 100px rgba(0,0,0,0.6),
-              inset 0 0 30px rgba(184,41,221,0.04);
+  border: 1px solid rgba(184, 41, 221, 0.08);
+  box-shadow:
+    inset 0 0 100px rgba(0, 0, 0, 0.6),
+    inset 0 0 30px rgba(184, 41, 221, 0.04);
   pointer-events: none;
   z-index: 7;
 }
@@ -195,8 +208,8 @@
     0deg,
     transparent,
     transparent 2px,
-    rgba(0,0,0,0.05) 2px,
-    rgba(0,0,0,0.05) 4px
+    rgba(0, 0, 0, 0.05) 2px,
+    rgba(0, 0, 0, 0.05) 4px
   );
   pointer-events: none;
   z-index: 6;
@@ -231,17 +244,22 @@
   opacity: 0.5;
   background: linear-gradient(
     90deg,
-    var(--neon-pink)  0%,  var(--neon-pink)  15%,
-    transparent       15%, transparent       35%,
-    var(--neon-amber) 35%, var(--neon-amber) 50%,
-    transparent       50%, transparent       70%,
-    var(--neon-cyan)  70%, var(--neon-cyan)  85%,
-    transparent       85%
+    var(--neon-pink) 0%,
+    var(--neon-pink) 15%,
+    transparent 15%,
+    transparent 35%,
+    var(--neon-amber) 35%,
+    var(--neon-amber) 50%,
+    transparent 50%,
+    transparent 70%,
+    var(--neon-cyan) 70%,
+    var(--neon-cyan) 85%,
+    transparent 85%
   );
 }
 .hint-key {
   color: var(--neon-cyan);
-  text-shadow: 0 0 4px rgba(34,238,255,0.3);
+  text-shadow: 0 0 4px rgba(34, 238, 255, 0.3);
 }
 
 /* Responsive — three-tier breakpoint system for cabinet chrome ------------- *
@@ -257,44 +275,119 @@
 
 /* TABLET */
 @media (max-width: 1023px) and (min-width: 601px) {
-  .side-bezel                         { width: 20px; }
-  .side-bezel::after                  { top: 14px; bottom: 14px; width: 3px; }
-  #marquee                            { height: 46px; padding: 0 12px; }
+  .side-bezel {
+    width: 20px;
+  }
+  .side-bezel::after {
+    top: 14px;
+    bottom: 14px;
+    width: 3px;
+  }
+  #marquee {
+    height: 46px;
+    padding: 0 12px;
+  }
   #marquee::before,
-  #marquee::after                     { width: 40px; top: 6px; bottom: 6px; }
-  .marquee-title                      { font-size: 16px; letter-spacing: 2px; margin-left: 44px; }
-  .marquee-game                       { font-size: 8px; margin-left: 12px; }
-  .marquee-right                      { margin-right: 44px; gap: 7px; }
-  .marquee-score                      { font-size: 9px; }
-  .m-btn                              { font-size: 6px; padding: 4px 7px; }
-  #control-deck                       { height: 36px; padding: 0 24px; gap: 12px; font-size: 6px; }
+  #marquee::after {
+    width: 40px;
+    top: 6px;
+    bottom: 6px;
+  }
+  .marquee-title {
+    font-size: 16px;
+    letter-spacing: 2px;
+    margin-left: 44px;
+  }
+  .marquee-game {
+    font-size: 8px;
+    margin-left: 12px;
+  }
+  .marquee-right {
+    margin-right: 44px;
+    gap: 7px;
+  }
+  .marquee-score {
+    font-size: 9px;
+  }
+  .m-btn {
+    font-size: 6px;
+    padding: 4px 7px;
+  }
+  #control-deck {
+    height: 36px;
+    padding: 0 24px;
+    gap: 12px;
+    font-size: 6px;
+  }
 }
 
 /* MOBILE */
 @media (max-width: 600px) {
-  .side-bezel                         { width: 10px; }
-  .side-bezel::after                  { display: none; }
-  #marquee                            { height: 40px; padding: 0 8px; }
-  #marquee::before,
-  #marquee::after                     { display: none; }
-  .marquee-title                      { font-size: 13px; letter-spacing: 1px; margin-left: 6px; }
-  .marquee-game                       { font-size: 6px; margin-left: 8px; }
-  .marquee-right                      { margin-right: 6px; gap: 5px; }
-  .marquee-score                      { font-size: 7px; }
-  .m-btn                              { font-size: 5px; padding: 3px 5px; }
-  #control-deck                       {
-    height: 32px; padding: 0 10px; gap: 8px; font-size: 5px;
-    overflow-x: auto; overflow-y: hidden;
-    white-space: nowrap; scrollbar-width: none;
+  .side-bezel {
+    width: 10px;
   }
-  #control-deck::-webkit-scrollbar    { display: none; }
-  #control-deck > span                { flex-shrink: 0; }
+  .side-bezel::after {
+    display: none;
+  }
+  #marquee {
+    height: 40px;
+    padding: 0 8px;
+  }
+  #marquee::before,
+  #marquee::after {
+    display: none;
+  }
+  .marquee-title {
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-left: 6px;
+  }
+  .marquee-game {
+    font-size: 6px;
+    margin-left: 8px;
+  }
+  .marquee-right {
+    margin-right: 6px;
+    gap: 5px;
+  }
+  .marquee-score {
+    font-size: 7px;
+  }
+  .m-btn {
+    font-size: 5px;
+    padding: 3px 5px;
+  }
+  #control-deck {
+    height: 32px;
+    padding: 0 10px;
+    gap: 8px;
+    font-size: 5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  #control-deck::-webkit-scrollbar {
+    display: none;
+  }
+  #control-deck > span {
+    flex-shrink: 0;
+  }
 }
 
 /* LANDSCAPE / SHORT VIEWPORTS — trim vertical chrome */
 @media (max-height: 480px) and (orientation: landscape) {
-  #marquee                            { height: 36px; }
-  .marquee-title                      { font-size: 14px; }
-  #control-deck                       { height: 28px; font-size: 6px; }
-  .side-bezel                         { width: 14px; }
+  #marquee {
+    height: 36px;
+  }
+  .marquee-title {
+    font-size: 14px;
+  }
+  #control-deck {
+    height: 28px;
+    font-size: 6px;
+  }
+  .side-bezel {
+    width: 14px;
+  }
 }
