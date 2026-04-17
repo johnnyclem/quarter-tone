@@ -1,43 +1,49 @@
-import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
+import type { GameDefinition, GameHost } from '../types.js';
 
 interface Enemy { x: number; y: number; alive: boolean; w: number; h: number; }
 interface Bullet { x: number; y: number; }
 
-export const createInvaders: GameFactory = (deps: GameDeps): Game => {
-  const rng = deps.random ?? Math.random;
-  const W = deps.width;
-  const H = deps.height;
+const state = {
+  px: 240,
+  bullets: [] as Bullet[],
+  enemies: [] as Enemy[],
+  tick: 0,
+  ed: 1,
+  es: 0.4,
+};
 
-  const state = {
-    px: 240,
-    bullets: [] as Bullet[],
-    enemies: [] as Enemy[],
-    tick: 0,
-    ed: 1,
-    es: 0.4,
-  };
-
-  const init = () => {
-    state.px = 240;
-    state.bullets = [];
-    state.enemies = [];
-    state.tick = 0;
-    for (let r = 0; r < 3; r++) {
-      for (let c = 0; c < 8; c++) {
-        state.enemies.push({ x: 40 + c * 50, y: 30 + r * 36, alive: true, w: 30, h: 20 });
-      }
+const reset = (host: GameHost): void => {
+  state.px = 240;
+  state.bullets = [];
+  state.enemies = [];
+  state.tick = 0;
+  for (let r = 0; r < 3; r++) {
+    for (let c = 0; c < 8; c++) {
+      state.enemies.push({ x: 40 + c * 50, y: 30 + r * 36, alive: true, w: 30, h: 20 });
     }
-    state.ed = 1;
-    state.es = 0.4;
-    deps.setScore(0);
-  };
+  }
+  state.ed = 1;
+  state.es = 0.4;
+  host.emit({ type: 'score', value: 0 });
+};
 
-  const update = () => {
-    if (deps.keys['ArrowLeft'] || deps.keys['a']) state.px = Math.max(15, state.px - 4);
-    if (deps.keys['ArrowRight'] || deps.keys['d']) state.px = Math.min(W - 15, state.px + 4);
-    if (deps.keys[' '] && state.tick % 8 === 0) {
+export const invaders: GameDefinition = {
+  id: 'invaders',
+  name: 'Space Synth',
+  emoji: '👾',
+  desc: 'Shooting gallery synth',
+
+  init(host: GameHost) {
+    reset(host);
+  },
+
+  update(host: GameHost) {
+    const W = host.width;
+    if (host.isKeyDown('ArrowLeft') || host.isKeyDown('a')) state.px = Math.max(15, state.px - 4);
+    if (host.isKeyDown('ArrowRight') || host.isKeyDown('d')) state.px = Math.min(W - 15, state.px + 4);
+    if (host.isKeyDown(' ') && state.tick % 8 === 0) {
       state.bullets.push({ x: state.px, y: 370 });
-      deps.playNote(12);
+      host.emit({ type: 'note', index: 12 });
     }
     state.tick++;
     let edge = false;
@@ -58,15 +64,18 @@ export const createInvaders: GameFactory = (deps: GameDeps): Game => {
         if (b.x >= e.x && b.x <= e.x + e.w && b.y >= e.y && b.y <= e.y + e.h) {
           e.alive = false;
           b.y = -10;
-          deps.playNote(Math.floor(rng() * 8));
-          deps.setScore(deps.getScore() + 25);
+          host.emit({ type: 'note', index: Math.floor(Math.random() * 8) });
+          host.emit({ type: 'scoreDelta', delta: 25 });
         }
       }
     }
-    if (state.enemies.every((e) => !e.alive)) init();
-  };
+    if (state.enemies.every((e) => !e.alive)) reset(host);
+  },
 
-  const draw = (ctx: DrawingContext) => {
+  draw(host: GameHost) {
+    const ctx = host.ctx;
+    const W = host.width;
+    const H = host.height;
     ctx.fillStyle = '#0a0612';
     ctx.fillRect(0, 0, W, H);
     for (const e of state.enemies) {
@@ -82,15 +91,5 @@ export const createInvaders: GameFactory = (deps: GameDeps): Game => {
     ctx.fillRect(state.px - 2, 368, 4, 8);
     ctx.fillStyle = '#ffaa22';
     for (const b of state.bullets) ctx.fillRect(b.x - 1, b.y, 2, 8);
-  };
-
-  return {
-    id: 'invaders',
-    name: 'Space Synth',
-    emoji: '👾',
-    desc: 'Shooting gallery synth',
-    init,
-    update,
-    draw,
-  };
+  },
 };

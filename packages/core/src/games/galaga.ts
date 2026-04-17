@@ -1,4 +1,4 @@
-import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
+import type { GameDefinition, GameHost } from '../types.js';
 
 interface Enemy {
   x: number;
@@ -10,47 +10,50 @@ interface Enemy {
 }
 interface Bullet { x: number; y: number; }
 
-export const createGalaga: GameFactory = (deps: GameDeps): Game => {
-  const rng = deps.random ?? Math.random;
-  const W = deps.width;
+const state = {
+  px: 240,
+  bullets: [] as Bullet[],
+  enemies: [] as Enemy[],
+  tick: 0,
+  wave: 1,
+};
 
-  const state = {
-    px: 240,
-    bullets: [] as Bullet[],
-    enemies: [] as Enemy[],
-    tick: 0,
-    wave: 1,
-  };
+const spawnWave = (): void => {
+  for (let i = 0; i < 6 + state.wave; i++) {
+    state.enemies.push({
+      x: 60 + (i % 8) * 50,
+      y: -20 - Math.floor(i / 8) * 30,
+      ty: 40 + Math.floor(i / 8) * 30,
+      alive: true,
+      diving: false,
+      da: 0,
+    });
+  }
+};
 
-  const sw = () => {
-    for (let i = 0; i < 6 + state.wave; i++) {
-      state.enemies.push({
-        x: 60 + (i % 8) * 50,
-        y: -20 - Math.floor(i / 8) * 30,
-        ty: 40 + Math.floor(i / 8) * 30,
-        alive: true,
-        diving: false,
-        da: 0,
-      });
-    }
-  };
+export const galaga: GameDefinition = {
+  id: 'galaga',
+  name: 'Galaga Groove',
+  emoji: '🚀',
+  desc: 'Dive bomb sequences',
 
-  const init = () => {
+  init(host: GameHost) {
     state.px = 240;
     state.bullets = [];
     state.enemies = [];
     state.tick = 0;
     state.wave = 1;
-    sw();
-    deps.setScore(0);
-  };
+    spawnWave();
+    host.emit({ type: 'score', value: 0 });
+  },
 
-  const update = () => {
-    if (deps.keys['ArrowLeft'] || deps.keys['a']) state.px = Math.max(15, state.px - 4);
-    if (deps.keys['ArrowRight'] || deps.keys['d']) state.px = Math.min(W - 15, state.px + 4);
-    if (deps.keys[' '] && state.tick % 10 === 0) {
+  update(host: GameHost) {
+    const W = host.width;
+    if (host.isKeyDown('ArrowLeft') || host.isKeyDown('a')) state.px = Math.max(15, state.px - 4);
+    if (host.isKeyDown('ArrowRight') || host.isKeyDown('d')) state.px = Math.min(W - 15, state.px + 4);
+    if (host.isKeyDown(' ') && state.tick % 10 === 0) {
       state.bullets.push({ x: state.px, y: 370 });
-      deps.playNote(10);
+      host.emit({ type: 'note', index: 10 });
     }
     state.tick++;
     for (const e of state.enemies) {
@@ -60,7 +63,7 @@ export const createGalaga: GameFactory = (deps: GameDeps): Game => {
           e.y += 2;
         } else {
           e.x += Math.sin(state.tick * 0.03);
-          if (rng() < 0.002) {
+          if (Math.random() < 0.002) {
             e.diving = true;
             e.da = Math.atan2(state.px - e.x, 380 - e.y);
           }
@@ -82,20 +85,21 @@ export const createGalaga: GameFactory = (deps: GameDeps): Game => {
         if (Math.abs(b.x - e.x) < 16 && Math.abs(b.y - e.y) < 16) {
           e.alive = false;
           b.y = -10;
-          deps.playNote(Math.floor(rng() * 12));
-          deps.setScore(deps.getScore() + (e.diving ? 50 : 25));
+          host.emit({ type: 'note', index: Math.floor(Math.random() * 12) });
+          host.emit({ type: 'scoreDelta', delta: e.diving ? 50 : 25 });
         }
       }
     }
     if (state.enemies.every((e) => !e.alive)) {
       state.wave++;
-      sw();
+      spawnWave();
     }
-  };
+  },
 
-  const draw = (ctx: DrawingContext) => {
+  draw(host: GameHost) {
+    const ctx = host.ctx;
     ctx.fillStyle = '#0a0612';
-    ctx.fillRect(0, 0, W, deps.height);
+    ctx.fillRect(0, 0, host.width, host.height);
     for (const e of state.enemies) {
       if (!e.alive) continue;
       ctx.fillStyle = e.diving ? '#ff2d95' : '#b829dd';
@@ -116,15 +120,5 @@ export const createGalaga: GameFactory = (deps: GameDeps): Game => {
     ctx.fill();
     ctx.fillStyle = '#ffaa22';
     for (const b of state.bullets) ctx.fillRect(b.x - 1, b.y, 2, 8);
-  };
-
-  return {
-    id: 'galaga',
-    name: 'Galaga Groove',
-    emoji: '🚀',
-    desc: 'Dive bomb sequences',
-    init,
-    update,
-    draw,
-  };
+  },
 };

@@ -1,48 +1,56 @@
-import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
+import type { GameDefinition, GameHost } from '../types.js';
 
 interface Barrel { x: number; y: number; vx: number; vy: number; pi: number; }
 interface Platform { x: number; y: number; w: number; }
 
-export const createKong: GameFactory = (deps: GameDeps): Game => {
-  const W = deps.width;
-  const H = deps.height;
+const state = {
+  px: 40,
+  py: 360,
+  vy: 0,
+  og: true,
+  barrels: [] as Barrel[],
+  tick: 0,
+  ni: 0,
+  plats: [] as Platform[],
+};
 
-  const state = {
-    px: 40,
-    py: 360,
-    vy: 0,
-    og: true,
-    barrels: [] as Barrel[],
-    tick: 0,
-    ni: 0,
-    plats: [] as Platform[],
-  };
+const reset = (host: GameHost): void => {
+  state.px = 40;
+  state.py = 360;
+  state.vy = 0;
+  state.og = true;
+  state.barrels = [];
+  state.tick = 0;
+  state.ni = 0;
+  state.plats = [
+    { x: 0, y: 380, w: host.width },
+    { x: 40, y: 310, w: 400 },
+    { x: 20, y: 240, w: 420 },
+    { x: 60, y: 170, w: 380 },
+    { x: 0, y: 100, w: 400 },
+  ];
+  host.emit({ type: 'score', value: 0 });
+};
 
-  const init = () => {
-    state.px = 40;
-    state.py = 360;
-    state.vy = 0;
-    state.og = true;
-    state.barrels = [];
-    state.tick = 0;
-    state.ni = 0;
-    state.plats = [
-      { x: 0, y: 380, w: W },
-      { x: 40, y: 310, w: 400 },
-      { x: 20, y: 240, w: 420 },
-      { x: 60, y: 170, w: 380 },
-      { x: 0, y: 100, w: 400 },
-    ];
-    deps.setScore(0);
-  };
+export const kong: GameDefinition = {
+  id: 'kong',
+  name: 'Kong Climb',
+  emoji: '🦍',
+  desc: 'Barrels = falling arpeggios',
 
-  const update = () => {
-    if (deps.keys['ArrowLeft'] || deps.keys['a']) state.px = Math.max(0, state.px - 3);
-    if (deps.keys['ArrowRight'] || deps.keys['d']) state.px = Math.min(W - 12, state.px + 3);
-    if ((deps.keys['ArrowUp'] || deps.keys['w'] || deps.keys[' ']) && state.og) {
+  init(host: GameHost) {
+    reset(host);
+  },
+
+  update(host: GameHost) {
+    const W = host.width;
+    const H = host.height;
+    if (host.isKeyDown('ArrowLeft') || host.isKeyDown('a')) state.px = Math.max(0, state.px - 3);
+    if (host.isKeyDown('ArrowRight') || host.isKeyDown('d')) state.px = Math.min(W - 12, state.px + 3);
+    if ((host.isKeyDown('ArrowUp') || host.isKeyDown('w') || host.isKeyDown(' ')) && state.og) {
       state.vy = -8;
       state.og = false;
-      deps.playNote(state.ni++);
+      host.emit({ type: 'note', index: state.ni++ });
     }
     state.vy += 0.35;
     state.py += state.vy;
@@ -68,7 +76,7 @@ export const createKong: GameFactory = (deps: GameDeps): Game => {
       b.vy += 0.2;
       b.y += b.vy;
       for (let i = b.pi; i >= 0; i--) {
-        const p = state.plats[i];
+        const p = state.plats[i]!;
         if (b.y >= p.y - 10 && b.y <= p.y + 5 && b.x >= p.x && b.x <= p.x + p.w) {
           b.y = p.y - 10;
           b.vy = 0;
@@ -78,20 +86,23 @@ export const createKong: GameFactory = (deps: GameDeps): Game => {
         }
       }
       if (Math.abs(b.x - state.px) < 16 && Math.abs(b.y - state.py) < 16) {
-        deps.playNote(0);
+        host.emit({ type: 'note', index: 0 });
         state.px = 40;
         state.py = 360;
       }
     }
     state.barrels = state.barrels.filter((b) => b.y < H && b.x > -20 && b.x < W + 20);
     if (state.py < 100) {
-      deps.setScore(deps.getScore() + 100);
-      deps.playNote(10);
-      init();
+      host.emit({ type: 'scoreDelta', delta: 100 });
+      host.emit({ type: 'note', index: 10 });
+      reset(host);
     }
-  };
+  },
 
-  const draw = (ctx: DrawingContext) => {
+  draw(host: GameHost) {
+    const ctx = host.ctx;
+    const W = host.width;
+    const H = host.height;
     ctx.fillStyle = '#0a0612';
     ctx.fillRect(0, 0, W, H);
     for (const p of state.plats) {
@@ -108,15 +119,5 @@ export const createKong: GameFactory = (deps: GameDeps): Game => {
       ctx.arc(b.x, b.y, 8, 0, Math.PI * 2);
       ctx.fill();
     }
-  };
-
-  return {
-    id: 'kong',
-    name: 'Kong Climb',
-    emoji: '🦍',
-    desc: 'Barrels = falling arpeggios',
-    init,
-    update,
-    draw,
-  };
+  },
 };
