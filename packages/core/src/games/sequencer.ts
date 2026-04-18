@@ -1,60 +1,66 @@
-import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
+import type { GameDefinition, GameHost } from '../types.js';
 
-export const createSequencer: GameFactory = (deps: GameDeps): Game => {
-  const W = deps.width;
-  const H = deps.height;
+const state = {
+  cols: 16,
+  rows: 8,
+  grid: [] as boolean[][],
+  step: 0,
+  tick: 0,
+  curX: 0,
+  curY: 0,
+  playing: true,
+  rn: ['KICK', 'SNARE', 'HAT', 'CLAP', 'TOM', 'RIM', 'PERC', 'FX'],
+};
 
-  const state = {
-    cols: 16,
-    rows: 8,
-    grid: [] as boolean[][],
-    step: 0,
-    tick: 0,
-    curX: 0,
-    curY: 0,
-    playing: true,
-    rn: ['KICK', 'SNARE', 'HAT', 'CLAP', 'TOM', 'RIM', 'PERC', 'FX'],
-  };
+export const sequencer: GameDefinition = {
+  id: 'sequencer',
+  name: 'Off The Grid',
+  emoji: '🎛️',
+  desc: '16-step drum sequencer',
 
-  const init = () => {
+  init(host: GameHost) {
     state.cols = 16;
     state.rows = 8;
-    state.grid = Array.from(
-      { length: state.rows },
-      () => Array(state.cols).fill(false) as boolean[],
+    state.grid = Array.from({ length: state.rows }, () =>
+      Array(state.cols).fill(false) as boolean[],
     );
     state.step = 0;
     state.tick = 0;
     state.curX = 0;
     state.curY = 0;
     state.playing = true;
-    deps.setScore(0);
-  };
+    host.emit({ type: 'score', value: 0 });
+  },
 
-  const onKey = (k: string) => {
-    if (k === 'ArrowRight' || k === 'd') state.curX = (state.curX + 1) % state.cols;
-    if (k === 'ArrowLeft' || k === 'a') state.curX = (state.curX - 1 + state.cols) % state.cols;
-    if (k === 'ArrowDown' || k === 's') state.curY = (state.curY + 1) % state.rows;
-    if (k === 'ArrowUp' || k === 'w') state.curY = (state.curY - 1 + state.rows) % state.rows;
-    if (k === ' ') {
-      state.grid[state.curY][state.curX] = !state.grid[state.curY][state.curX];
-      if (state.grid[state.curY][state.curX]) deps.playNote(state.curY);
+  onKey(key: string, down: boolean, host: GameHost) {
+    if (!down) return;
+    if (key === 'ArrowRight' || key === 'd') state.curX = (state.curX + 1) % state.cols;
+    if (key === 'ArrowLeft' || key === 'a') state.curX = (state.curX - 1 + state.cols) % state.cols;
+    if (key === 'ArrowDown' || key === 's') state.curY = (state.curY + 1) % state.rows;
+    if (key === 'ArrowUp' || key === 'w') state.curY = (state.curY - 1 + state.rows) % state.rows;
+    if (key === ' ') {
+      const row = state.grid[state.curY]!;
+      row[state.curX] = !row[state.curX];
+      if (row[state.curX]) host.emit({ type: 'note', index: state.curY });
     }
-  };
+  },
 
-  const update = () => {
+  update(host: GameHost) {
     state.tick++;
-    const bpm = deps.getBpm();
-    const stp = Math.max(4, Math.floor(((60 / bpm) * 60) / 4));
+    const bpm = host.synth.bpm;
+    const stp = Math.max(4, Math.floor((60 / bpm) * 60 / 4));
     if (state.playing && state.tick % stp === 0) {
       state.step = (state.step + 1) % state.cols;
       for (let r = 0; r < state.rows; r++) {
-        if (state.grid[r][state.step]) deps.playNote(r * 2);
+        if (state.grid[r]![state.step]) host.emit({ type: 'note', index: r * 2 });
       }
     }
-  };
+  },
 
-  const draw = (ctx: DrawingContext) => {
+  draw(host: GameHost) {
+    const ctx = host.ctx;
+    const W = host.width;
+    const H = host.height;
     ctx.fillStyle = '#0a0612';
     ctx.fillRect(0, 0, W, H);
     const cw = 26;
@@ -64,17 +70,13 @@ export const createSequencer: GameFactory = (deps: GameDeps): Game => {
     ctx.font = '6px "Press Start 2P"';
     for (let r = 0; r < state.rows; r++) {
       ctx.fillStyle = 'rgba(184,41,221,0.5)';
-      ctx.fillText(state.rn[r], 0, oy + r * ch + ch / 2 + 2);
+      ctx.fillText(state.rn[r]!, 0, oy + r * ch + ch / 2 + 2);
       for (let c = 0; c < state.cols; c++) {
         const x = ox + c * cw;
         const y = oy + r * ch;
-        ctx.fillStyle = state.grid[r][c]
-          ? c === state.step
-            ? '#ff2d95'
-            : '#b829dd'
-          : c === state.step
-            ? 'rgba(255,45,149,0.15)'
-            : 'rgba(184,41,221,0.08)';
+        ctx.fillStyle = state.grid[r]![c]
+          ? (c === state.step ? '#ff2d95' : '#b829dd')
+          : (c === state.step ? 'rgba(255,45,149,0.15)' : 'rgba(184,41,221,0.08)');
         ctx.fillRect(x + 1, y + 1, cw - 2, ch - 2);
         if (c === state.curX && r === state.curY) {
           ctx.strokeStyle = '#ffaa22';
@@ -86,16 +88,5 @@ export const createSequencer: GameFactory = (deps: GameDeps): Game => {
     }
     ctx.fillStyle = '#ff2d95';
     ctx.fillRect(ox + state.step * cw, oy + state.rows * ch + 5, cw, 3);
-  };
-
-  return {
-    id: 'sequencer',
-    name: 'Off The Grid',
-    emoji: '🎛️',
-    desc: '16-step drum sequencer',
-    init,
-    update,
-    draw,
-    onKey,
-  };
+  },
 };

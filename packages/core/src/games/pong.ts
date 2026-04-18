@@ -1,58 +1,63 @@
-import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
+import type { GameDefinition, GameHost } from '../types.js';
 
-export const createPong: GameFactory = (deps: GameDeps): Game => {
-  const rng = deps.random ?? Math.random;
-  const W = deps.width;
-  const H = deps.height;
+const state = {
+  ball: { x: 240, y: 200, vx: 3, vy: 2.5, r: 6 },
+  padY: 180,
+  cpuY: 180,
+  padH: 60,
+  noteIdx: 0,
+};
 
-  const state = {
-    ball: { x: 240, y: 200, vx: 3, vy: 2.5, r: 6 },
-    padY: 180,
-    cpuY: 180,
-    padH: 60,
-    noteIdx: 0,
-  };
+export const pong: GameDefinition = {
+  id: 'pong',
+  name: 'Sound Pong',
+  emoji: '🏓',
+  desc: 'Ball bounces trigger notes',
 
-  const init = () => {
+  init(host: GameHost) {
     state.ball = { x: 240, y: 200, vx: 3, vy: 2.5, r: 6 };
     state.padY = 180;
     state.cpuY = 180;
     state.padH = 60;
     state.noteIdx = 0;
-    deps.setScore(0);
-  };
+    host.emit({ type: 'score', value: 0 });
+  },
 
-  const update = () => {
+  update(host: GameHost) {
+    const W = host.width;
+    const H = host.height;
     const b = state.ball;
-    if (deps.keys['ArrowUp'] || deps.keys['w']) state.padY = Math.max(0, state.padY - 5);
-    if (deps.keys['ArrowDown'] || deps.keys['s'])
-      state.padY = Math.min(H - state.padH, state.padY + 5);
+    if (host.isKeyDown('ArrowUp') || host.isKeyDown('w')) state.padY = Math.max(0, state.padY - 5);
+    if (host.isKeyDown('ArrowDown') || host.isKeyDown('s')) state.padY = Math.min(H - state.padH, state.padY + 5);
     state.cpuY += (b.y - state.cpuY - state.padH / 2) * 0.06;
     state.cpuY = Math.max(0, Math.min(H - state.padH, state.cpuY));
     b.x += b.vx;
     b.y += b.vy;
     if (b.y <= b.r || b.y >= H - b.r) {
       b.vy *= -1;
-      deps.playNote(state.noteIdx++);
+      host.emit({ type: 'note', index: state.noteIdx++ });
     }
     if (b.x <= 22 && b.y >= state.padY && b.y <= state.padY + state.padH) {
       b.vx = Math.abs(b.vx) * 1.02;
-      deps.playNote(state.noteIdx++);
-      deps.setScore(deps.getScore() + 10);
+      host.emit({ type: 'note', index: state.noteIdx++ });
+      host.emit({ type: 'scoreDelta', delta: 10 });
     }
     if (b.x >= W - 22 && b.y >= state.cpuY && b.y <= state.cpuY + state.padH) {
       b.vx = -Math.abs(b.vx) * 1.02;
-      deps.playNote(state.noteIdx++);
+      host.emit({ type: 'note', index: state.noteIdx++ });
     }
     if (b.x < -10 || b.x > W + 10) {
       b.x = 240;
       b.y = 200;
-      b.vx = 3 * (rng() > 0.5 ? 1 : -1);
-      b.vy = 2.5 * (rng() > 0.5 ? 1 : -1);
+      b.vx = 3 * (Math.random() > 0.5 ? 1 : -1);
+      b.vy = 2.5 * (Math.random() > 0.5 ? 1 : -1);
     }
-  };
+  },
 
-  const draw = (ctx: DrawingContext) => {
+  draw(host: GameHost) {
+    const ctx = host.ctx;
+    const W = host.width;
+    const H = host.height;
     ctx.fillStyle = '#0a0612';
     ctx.fillRect(0, 0, W, H);
     ctx.setLineDash([6, 6]);
@@ -70,15 +75,5 @@ export const createPong: GameFactory = (deps: GameDeps): Game => {
     ctx.beginPath();
     ctx.arc(state.ball.x, state.ball.y, state.ball.r, 0, Math.PI * 2);
     ctx.fill();
-  };
-
-  return {
-    id: 'pong',
-    name: 'Sound Pong',
-    emoji: '🏓',
-    desc: 'Ball bounces trigger notes',
-    init,
-    update,
-    draw,
-  };
+  },
 };

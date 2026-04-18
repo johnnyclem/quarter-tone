@@ -1,4 +1,4 @@
-import type { DrawingContext, Game, GameDeps, GameFactory } from '../types.js';
+import type { GameDefinition, GameHost } from '../types.js';
 
 interface Bullet {
   x: number;
@@ -15,36 +15,37 @@ interface Asteroid {
   r: number;
 }
 
-export const createAsteroids: GameFactory = (deps: GameDeps): Game => {
-  const rng = deps.random ?? Math.random;
-  const W = deps.width;
-  const H = deps.height;
+const state = {
+  px: 240,
+  py: 200,
+  angle: -Math.PI / 2,
+  vx: 0,
+  vy: 0,
+  bullets: [] as Bullet[],
+  asteroids: [] as Asteroid[],
+  tick: 0,
+  ni: 0,
+};
 
-  const state = {
-    px: 240,
-    py: 200,
-    angle: -Math.PI / 2,
-    vx: 0,
-    vy: 0,
-    bullets: [] as Bullet[],
-    asteroids: [] as Asteroid[],
-    tick: 0,
-    ni: 0,
-  };
+const spawnField = (host: GameHost, vmax: number): void => {
+  for (let i = 0; i < 6; i++) {
+    state.asteroids.push({
+      x: Math.random() * host.width,
+      y: Math.random() * host.height,
+      vx: (Math.random() - 0.5) * vmax,
+      vy: (Math.random() - 0.5) * vmax,
+      r: 20 + Math.random() * 15,
+    });
+  }
+};
 
-  const spawnField = (vmax: number) => {
-    for (let i = 0; i < 6; i++) {
-      state.asteroids.push({
-        x: rng() * W,
-        y: rng() * H,
-        vx: (rng() - 0.5) * vmax,
-        vy: (rng() - 0.5) * vmax,
-        r: 20 + rng() * 15,
-      });
-    }
-  };
+export const asteroids: GameDefinition = {
+  id: 'asteroids',
+  name: 'Deep Spaced',
+  emoji: '☄️',
+  desc: 'Shooting & collisions = arps',
 
-  const init = () => {
+  init(host: GameHost) {
     state.px = 240;
     state.py = 200;
     state.angle = -Math.PI / 2;
@@ -54,14 +55,16 @@ export const createAsteroids: GameFactory = (deps: GameDeps): Game => {
     state.asteroids = [];
     state.tick = 0;
     state.ni = 0;
-    spawnField(2);
-    deps.setScore(0);
-  };
+    spawnField(host, 2);
+    host.emit({ type: 'score', value: 0 });
+  },
 
-  const update = () => {
-    if (deps.keys['ArrowLeft'] || deps.keys['a']) state.angle -= 0.06;
-    if (deps.keys['ArrowRight'] || deps.keys['d']) state.angle += 0.06;
-    if (deps.keys['ArrowUp'] || deps.keys['w']) {
+  update(host: GameHost) {
+    const W = host.width;
+    const H = host.height;
+    if (host.isKeyDown('ArrowLeft') || host.isKeyDown('a')) state.angle -= 0.06;
+    if (host.isKeyDown('ArrowRight') || host.isKeyDown('d')) state.angle += 0.06;
+    if (host.isKeyDown('ArrowUp') || host.isKeyDown('w')) {
       state.vx += Math.cos(state.angle) * 0.15;
       state.vy += Math.sin(state.angle) * 0.15;
     }
@@ -74,7 +77,7 @@ export const createAsteroids: GameFactory = (deps: GameDeps): Game => {
     if (state.py < 0) state.py = H;
     if (state.py > H) state.py = 0;
     state.tick++;
-    if (deps.keys[' '] && state.tick % 8 === 0) {
+    if (host.isKeyDown(' ') && state.tick % 8 === 0) {
       state.bullets.push({
         x: state.px + Math.cos(state.angle) * 14,
         y: state.py + Math.sin(state.angle) * 14,
@@ -82,7 +85,7 @@ export const createAsteroids: GameFactory = (deps: GameDeps): Game => {
         vy: Math.sin(state.angle) * 6,
         life: 50,
       });
-      deps.playNote(state.ni++);
+      host.emit({ type: 'note', index: state.ni++ });
     }
     for (const b of state.bullets) {
       b.x += b.vx;
@@ -100,7 +103,7 @@ export const createAsteroids: GameFactory = (deps: GameDeps): Game => {
     }
     for (const b of state.bullets) {
       for (let i = state.asteroids.length - 1; i >= 0; i--) {
-        const a = state.asteroids[i];
+        const a = state.asteroids[i]!;
         if (Math.hypot(b.x - a.x, b.y - a.y) < a.r) {
           b.life = 0;
           if (a.r > 14) {
@@ -108,32 +111,35 @@ export const createAsteroids: GameFactory = (deps: GameDeps): Game => {
               state.asteroids.push({
                 x: a.x,
                 y: a.y,
-                vx: (rng() - 0.5) * 3,
-                vy: (rng() - 0.5) * 3,
+                vx: (Math.random() - 0.5) * 3,
+                vy: (Math.random() - 0.5) * 3,
                 r: a.r * 0.55,
               });
             }
           }
           state.asteroids.splice(i, 1);
-          deps.playNote(state.ni++);
-          deps.setScore(deps.getScore() + 25);
+          host.emit({ type: 'note', index: state.ni++ });
+          host.emit({ type: 'scoreDelta', delta: 25 });
           break;
         }
       }
     }
     for (const a of state.asteroids) {
       if (Math.hypot(state.px - a.x, state.py - a.y) < a.r + 8) {
-        deps.playNote(0);
+        host.emit({ type: 'note', index: 0 });
         state.px = 240;
         state.py = 200;
         state.vx = 0;
         state.vy = 0;
       }
     }
-    if (state.asteroids.length === 0) spawnField(3);
-  };
+    if (state.asteroids.length === 0) spawnField(host, 3);
+  },
 
-  const draw = (ctx: DrawingContext) => {
+  draw(host: GameHost) {
+    const ctx = host.ctx;
+    const W = host.width;
+    const H = host.height;
     ctx.fillStyle = '#0a0612';
     ctx.fillRect(0, 0, W, H);
     ctx.save();
@@ -157,15 +163,5 @@ export const createAsteroids: GameFactory = (deps: GameDeps): Game => {
     }
     ctx.fillStyle = '#ff2d95';
     for (const b of state.bullets) ctx.fillRect(b.x - 1, b.y - 1, 3, 3);
-  };
-
-  return {
-    id: 'asteroids',
-    name: 'Deep Spaced',
-    emoji: '☄️',
-    desc: 'Shooting & collisions = arps',
-    init,
-    update,
-    draw,
-  };
+  },
 };
