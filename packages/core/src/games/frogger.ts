@@ -1,7 +1,15 @@
 import type { GameDefinition, GameHost } from '../types.js';
 
-interface Car { x: number; w: number; }
-interface Lane { y: number; speed: number; cars: Car[]; isWater: boolean; }
+interface Car {
+  x: number;
+  w: number;
+}
+interface Lane {
+  y: number;
+  speed: number;
+  cars: Car[];
+  isWater: boolean;
+}
 
 const state = {
   px: 240,

@@ -1,0 +1,30 @@
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+
+.app__title {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  margin: 0 0 0.5rem;
+  letter-spacing: 0.08em;
+  color: #ff2d95;
+  text-shadow: 0 0 10px rgba(255, 45, 149, 0.4);
+}
+
+.app__subtitle {
+  font-size: 1rem;
+  color: #b89ecd;
+  margin: 0 0 2rem;
+}
+
+.app__scale code {
+  display: inline-block;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid rgba(255, 170, 34, 0.5);
+  border-radius: 0.5rem;
+  color: #ffaa22;
+  background: rgba(255, 170, 34, 0.08);
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}

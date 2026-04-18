@@ -94,9 +94,18 @@ body.crt-off #crt-frame{box-shadow:none;border-radius:0}
 #game-menu{position:absolute;inset:0;background:rgba(10,6,18,0.96);display:flex;flex-direction:column;align-items:center;padding-top:40px;z-index:50;overflow-y:auto}
 #game-menu.hidden{display:none}
 .menu-title{font-family:'Righteous',cursive;font-size:24px;color:var(--neon-pink);text-shadow:0 0 15px var(--glow-pink);margin-bottom:30px;letter-spacing:4px}
+.menu-hint{font-size:6px;color:var(--text-dim);letter-spacing:2px;margin-bottom:20px;text-align:center}
 .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:0 30px 30px;width:100%;max-width:800px}
-.game-card{background:linear-gradient(135deg,rgba(184,41,221,0.1),rgba(255,45,149,0.05));border:1px solid rgba(184,41,221,0.25);border-radius:8px;padding:14px 10px;cursor:pointer;transition:all 0.2s;text-align:center}
+.game-card{position:relative;background:linear-gradient(135deg,rgba(184,41,221,0.1),rgba(255,45,149,0.05));border:1px solid rgba(184,41,221,0.25);border-radius:8px;padding:14px 10px;cursor:pointer;transition:all 0.2s;text-align:center;overflow:hidden}
 .game-card:hover{border-color:var(--neon-pink);box-shadow:0 0 20px var(--glow-pink);transform:translateY(-3px)}
+.game-card:focus{outline:none;border-color:var(--neon-amber);box-shadow:0 0 18px var(--glow-amber)}
+.game-card.active{border-color:var(--neon-amber);box-shadow:0 0 20px var(--glow-amber);background:linear-gradient(135deg,rgba(255,170,34,0.15),rgba(255,45,149,0.08))}
+.game-card.active::after{content:'NOW PLAYING';position:absolute;top:4px;right:4px;font-size:5px;color:var(--neon-amber);letter-spacing:1px;text-shadow:0 0 4px var(--glow-amber)}
+.game-card.loading{cursor:wait;pointer-events:none;border-color:var(--neon-cyan);box-shadow:0 0 16px rgba(34,238,255,0.4);animation:card-pulse 0.9s ease-in-out infinite}
+.game-card.loading::before{content:'LOADING';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,6,18,0.78);color:var(--neon-cyan);font-size:8px;letter-spacing:3px;text-shadow:0 0 6px rgba(34,238,255,0.6);z-index:1}
+.game-card.error{border-color:#ff6644;box-shadow:0 0 14px rgba(255,102,68,0.5)}
+.game-card.error::before{content:'LOAD ERROR';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,6,18,0.82);color:#ff6644;font-size:8px;letter-spacing:2px;z-index:1}
+@keyframes card-pulse{0%,100%{box-shadow:0 0 16px rgba(34,238,255,0.4)}50%{box-shadow:0 0 28px rgba(34,238,255,0.7)}}
 .game-card .emoji{font-size:32px;display:block;margin-bottom:8px}
 .game-card .name{font-size:8px;color:var(--neon-amber);text-shadow:0 0 4px var(--glow-amber);margin-bottom:4px}
 .game-card .desc{font-size:6px;color:var(--text-dim);line-height:1.8}
@@ -124,6 +133,25 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 .disco-dot{position:fixed;width:3px;height:3px;border-radius:50%;background:white;opacity:0;animation:disco-sparkle var(--dur) var(--delay) infinite;z-index:1;pointer-events:none}
 @keyframes disco-sparkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:var(--peak);transform:scale(1.5)}}
 
+/* TOUCH CONTROLS */
+#touch-controls{position:fixed;left:0;right:0;bottom:0;display:none;justify-content:space-between;align-items:flex-end;padding:12px 18px 18px;pointer-events:none;z-index:80;gap:12px}
+#touch-controls.enabled{display:flex}
+body:has(#game-menu:not(.hidden)) #touch-controls,body:has(#title-screen:not(.hidden)) #touch-controls{opacity:0;pointer-events:none}
+.dpad{position:relative;width:150px;height:150px;pointer-events:none;flex-shrink:0}
+.dpad-btn{position:absolute;width:50px;height:50px;background:rgba(34,238,255,0.1);border:2px solid var(--neon-cyan);color:var(--neon-cyan);font-family:'Press Start 2P',monospace;font-size:14px;border-radius:8px;box-shadow:0 0 8px rgba(34,238,255,0.35),inset 0 0 10px rgba(34,238,255,0.08);display:flex;align-items:center;justify-content:center;pointer-events:auto;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;cursor:pointer;transition:transform .08s,box-shadow .08s,background .08s;padding:0}
+.dpad-btn.pressed{background:rgba(34,238,255,0.4);box-shadow:0 0 18px rgba(34,238,255,0.75),inset 0 0 14px rgba(34,238,255,0.4);transform:scale(0.92)}
+.dpad-up{top:0;left:50px}
+.dpad-down{bottom:0;left:50px}
+.dpad-left{top:50px;left:0}
+.dpad-right{top:50px;right:0}
+.dpad-center{position:absolute;top:55px;left:55px;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle,rgba(184,41,221,0.25),transparent 70%);pointer-events:none}
+.action-cluster{display:flex;gap:14px;align-items:flex-end;pointer-events:none}
+.action-btn{border:2px solid var(--neon-pink);background:rgba(255,45,149,0.12);color:var(--neon-pink);font-family:'Press Start 2P',monospace;box-shadow:0 0 10px var(--glow-pink),inset 0 0 12px rgba(255,45,149,0.08);pointer-events:auto;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;cursor:pointer;transition:transform .08s,box-shadow .08s,background .08s;padding:0}
+.action-a{width:72px;height:72px;border-radius:50%;font-size:16px}
+.action-menu{width:54px;height:54px;border-radius:50%;font-size:9px;border-color:var(--neon-amber);color:var(--neon-amber);background:rgba(255,170,34,0.12);box-shadow:0 0 10px var(--glow-amber),inset 0 0 12px rgba(255,170,34,0.08)}
+.action-btn.pressed{background:rgba(255,45,149,0.42);box-shadow:0 0 20px var(--glow-pink),inset 0 0 16px rgba(255,45,149,0.4);transform:scale(0.92)}
+.action-menu.pressed{background:rgba(255,170,34,0.42);box-shadow:0 0 20px var(--glow-amber),inset 0 0 16px rgba(255,170,34,0.4)}
+
 /* RESPONSIVE BREAKPOINTS — panels/menu.
    Cabinet chrome (bezel, marquee, control-deck) lives in styles/cabinet.css. */
 
@@ -149,6 +177,14 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
   .game-card{padding:10px 6px}
   .game-card .emoji{font-size:26px;margin-bottom:6px}
   #game-menu{padding-top:24px}
+  #touch-controls{padding:8px 10px 10px}
+  .dpad{width:132px;height:132px}
+  .dpad-btn{width:44px;height:44px;font-size:12px}
+  .dpad-up,.dpad-down{left:44px}
+  .dpad-left,.dpad-right{top:44px}
+  .dpad-center{top:48px;left:48px;width:36px;height:36px}
+  .action-a{width:64px;height:64px;font-size:14px}
+  .action-menu{width:48px;height:48px;font-size:8px}
 }
 
 /* LANDSCAPE / SHORT VIEWPORTS */
@@ -190,6 +226,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
       </div>
       <div id="game-menu">
         <div class="menu-title">SELECT GAME</div>
+        <div class="menu-hint">CLICK A CABINET TO LOAD</div>
         <div class="game-grid" id="game-grid"></div>
       </div>
     </div>
@@ -225,9 +262,22 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
     <div class="knob-group"><span class="knob-name">RELEASE</span><span class="knob-val" id="knob-release" onclick="cycleRelease()">0.3</span></div>
   </div></div>
 </div>
+<div id="touch-controls" aria-hidden="false">
+  <div class="dpad" role="group" aria-label="Directional pad">
+    <button type="button" class="dpad-btn dpad-up" data-key="ArrowUp" aria-label="Up">▲</button>
+    <button type="button" class="dpad-btn dpad-left" data-key="ArrowLeft" aria-label="Left">◀</button>
+    <button type="button" class="dpad-btn dpad-right" data-key="ArrowRight" aria-label="Right">▶</button>
+    <button type="button" class="dpad-btn dpad-down" data-key="ArrowDown" aria-label="Down">▼</button>
+    <span class="dpad-center" aria-hidden="true"></span>
+  </div>
+  <div class="action-cluster" role="group" aria-label="Action buttons">
+    <button type="button" class="action-btn action-menu" data-action="menu" aria-label="Menu">MENU</button>
+    <button type="button" class="action-btn action-a" data-key=" " aria-label="Action">A</button>
+  </div>
+</div>
 <script type="module">
 /* 2.6 — Zustand-backed synth state. One vanilla store owns every TONE/FX
-   knob, every MIX slider, and the drawer's open flag; the classic script
+   knob, every MIX slider, and the drawer's open flag; the game-logic module
    below reads and mutates it exclusively through `window.synthStore`. */
 import { createStore } from 'https://esm.sh/zustand@5.0.12/vanilla';
 const KEYS=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -263,7 +313,8 @@ window.synthStore=createStore((set,get)=>({
 window.SYNTH_CATALOGUE={KEYS,SCALES,WAVES,ARPS,ATTACKS,RELEASES,MIN_OCTAVE,MAX_OCTAVE,MIN_BPM,MAX_BPM};
 window.dispatchEvent(new CustomEvent('synthstore-ready'));
 </script>
-<script>
+<script type="module">
+import { GAMES_MANIFEST, loadGameModule } from './src/games/manifest.js';
 const canvas=document.getElementById('game-canvas'),ctx=canvas.getContext('2d'),GAME_W=480,GAME_H=400,crtFrame=document.getElementById('crt-frame');
 /* RenderContext: thin, chainable wrapper over Canvas2D.
    Each method returns `this` so draw calls can be fluent. Style args are
@@ -361,30 +412,57 @@ const analytics=(function(){
 })();
 window.addEventListener('pagehide',()=>analytics.endSession());
 window.addEventListener('beforeunload',()=>analytics.endSession());
-let synth,delay,reverb,mainVol,audioReady=false;
+let synth,delay,reverb,mainVol,compressor,makeupGain,audioReady=false;
 const KEYS=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const SCALES={'Major':[0,2,4,5,7,9,11],'Minor':[0,2,3,5,7,8,10],'Penta':[0,2,4,7,9],'Blues':[0,3,5,6,7,10],'Dorian':[0,2,3,5,7,9,10],'Mixo':[0,2,4,5,7,9,10],'Phrygian':[0,1,3,5,7,8,10]};
 const WAVES=['triangle','sine','square','sawtooth'],ARPS=['Up','Down','Bounce','Random'],ATTACKS=[0.005,0.02,0.05,0.1,0.2],RELEASES=[0.1,0.2,0.3,0.5,0.8,1.2];
+/* OUTRUN master compressor — a DynamicsCompressorNode (via Tone.Compressor)
+   inserted at the tail of the master chain, followed by a makeup Gain, so
+   every mode's audio flows through it. Bypass swaps reverb's output between
+   the compressor and the makeup gain so the compressor node is truly
+   removed from the signal path. */
+const COMPRESSOR_DEFAULTS={threshold:-24,ratio:4,knee:10,attack:0.003,release:0.25,makeup:1.0,bypass:false};
+const compressorState={...COMPRESSOR_DEFAULTS};
+function setCompressorParam(name,val){
+  if(!(name in COMPRESSOR_DEFAULTS))return;
+  compressorState[name]=val;
+  if(!audioReady)return;
+  if(name==='threshold'&&compressor)compressor.threshold.value=val;
+  else if(name==='ratio'&&compressor)compressor.ratio.value=val;
+  else if(name==='knee'&&compressor)compressor.knee.value=val;
+  else if(name==='attack'&&compressor)compressor.attack.value=val;
+  else if(name==='release'&&compressor)compressor.release.value=val;
+  else if(name==='makeup'&&makeupGain)makeupGain.gain.value=val;
+}
+function applyCompressorBypass(){
+  if(!reverb||!compressor||!makeupGain)return;
+  try{reverb.disconnect();}catch(e){}
+  if(compressorState.bypass)reverb.connect(makeupGain);
+  else reverb.connect(compressor);
+}
+function toggleCompressorBypass(){compressorState.bypass=!compressorState.bypass;applyCompressorBypass();}
+function getCompressorReduction(){
+  if(!compressor)return 0;
+  const r=compressor.reduction;
+  if(typeof r==='number')return r;
+  if(r&&typeof r.value==='number')return r.value;
+  return 0;
+}
 /* Reader helper: every synth field now lives in the Zustand store created
    by the ESM block above. `ST()` returns a fresh snapshot each call. */
 const ST=()=>window.synthStore.getState();
-async function initAudio(){if(audioReady)return;await Tone.start();const s=ST();reverb=new Tone.Reverb({decay:2.5,wet:s.reverbWet}).toDestination();delay=new Tone.FeedbackDelay({delayTime:'8n',feedback:0.3,wet:s.delayWet}).connect(reverb);mainVol=new Tone.Volume(-6).connect(delay);synth=new Tone.PolySynth(Tone.Synth,{oscillator:{type:WAVES[s.waveIdx]},envelope:{attack:ATTACKS[s.attackIdx],decay:0.2,sustain:0.3,release:RELEASES[s.releaseIdx]},volume:-8}).connect(mainVol);mainVol.volume.value=Tone.gainToDb(s.volume);Tone.Transport.bpm.value=s.bpm;audioReady=true;}
+async function initAudio(){if(audioReady)return;await Tone.start();const s=ST();makeupGain=new Tone.Gain(compressorState.makeup).toDestination();compressor=new Tone.Compressor({threshold:compressorState.threshold,ratio:compressorState.ratio,knee:compressorState.knee,attack:compressorState.attack,release:compressorState.release}).connect(makeupGain);reverb=new Tone.Reverb({decay:2.5,wet:s.reverbWet}).connect(compressor);delay=new Tone.FeedbackDelay({delayTime:'8n',feedback:0.3,wet:s.delayWet}).connect(reverb);mainVol=new Tone.Volume(-6).connect(delay);synth=new Tone.PolySynth(Tone.Synth,{oscillator:{type:WAVES[s.waveIdx]},envelope:{attack:ATTACKS[s.attackIdx],decay:0.2,sustain:0.3,release:RELEASES[s.releaseIdx]},volume:-8}).connect(mainVol);mainVol.volume.value=Tone.gainToDb(s.volume);Tone.Transport.bpm.value=s.bpm;audioReady=true;applyCompressorBypass();}
 function getScaleNotes(n=16){const s=ST(),iv=SCALES[s.scale],notes=[];for(let o=s.octave-1;o<=s.octave+1;o++)for(const i of iv){const ni=(s.key+i)%12,oct=o+Math.floor((s.key+i)/12);notes.push(KEYS[ni]+oct);}return notes.slice(0,n);}
 function playNote(i){if(!audioReady||!synth)return;const n=getScaleNotes();try{synth.triggerAttackRelease(n[Math.abs(i)%n.length],'16n');}catch(e){}}
 function _cs(v){return v==null?v:JSON.parse(JSON.stringify(v));}
 function saveGameState(slot){slot=slot||1;if(!currentGame||!currentGame.getState){console.warn('No game to save');return false;}try{const payload={id:currentGame.id,score:score,state:currentGame.getState(),ts:Date.now()};localStorage.setItem('qt-save-'+slot,JSON.stringify(payload));flashMarquee('SAVED');return true;}catch(e){console.warn('Save failed',e);return false;}}
 function loadGameState(slot){slot=slot||1;try{const raw=localStorage.getItem('qt-save-'+slot);if(!raw){flashMarquee('NO SAVE');return false;}const s=JSON.parse(raw);const g=GAMES.find(gm=>gm.id===s.id);if(!g||!g.loadState){flashMarquee('LOAD FAIL');return false;}currentGame=g;g.init(host);g.loadState(s.state);setScore(s.score||0);document.getElementById('game-menu').classList.add('hidden');document.getElementById('current-game-label').textContent=g.name.toUpperCase();flashMarquee('LOADED');analytics.selectGame(s.id,'load');return true;}catch(e){console.warn('Load failed',e);flashMarquee('LOAD FAIL');return false;}}
 function flashMarquee(msg){const el=document.getElementById('current-game-label');if(!el)return;const prev=el.textContent;el.textContent=msg;clearTimeout(flashMarquee._t);flashMarquee._t=setTimeout(()=>{el.textContent=(currentGame?currentGame.name.toUpperCase():'SELECT A GAME');},900);}
-/* Render the entire synth drawer UI from the current store snapshot.
-   Called on every store change so every DOM label stays in sync with
-   whichever actor mutated the state (knob click, slider drag, randomiser,
-   keyboard shortcut, future preset loader, etc.). */
 function renderSynth(){const s=ST();const $=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};$('knob-key',KEYS[s.key]);$('knob-scale',s.scale);const w=WAVES[s.waveIdx];$('knob-wave',w.slice(0,3).charAt(0).toUpperCase()+w.slice(1,3));$('knob-arp',ARPS[s.arpIdx]);$('knob-octave',s.octave);$('knob-attack',ATTACKS[s.attackIdx]);$('knob-release',RELEASES[s.releaseIdx]);$('delay-val',s.delayWet.toFixed(2));$('reverb-val',s.reverbWet.toFixed(2));$('vol-val',s.volume.toFixed(2));$('bpm-val',s.bpm);const dr=document.getElementById('synth-drawer'),tg=document.getElementById('synth-toggle');if(dr)dr.classList.toggle('open',s.drawerOpen);if(tg)tg.classList.toggle('open',s.drawerOpen);}
-/* Push store values into the audio graph. Tone nodes may not exist yet
-   before `initAudio`, so each mutation is guarded. */
 function syncAudio(){const s=ST();if(synth)synth.set({oscillator:{type:WAVES[s.waveIdx]},envelope:{attack:ATTACKS[s.attackIdx],release:RELEASES[s.releaseIdx]}});if(delay)delay.wet.value=s.delayWet;if(reverb)reverb.wet.value=s.reverbWet;if(mainVol)mainVol.volume.value=Tone.gainToDb(s.volume);if(typeof Tone!=='undefined'&&Tone.Transport)Tone.Transport.bpm.value=s.bpm;}
-/* Subscribe once: every store change reflows the UI and the audio graph. */
-window.addEventListener('synthstore-ready',()=>{window.synthStore.subscribe(()=>{renderSynth();syncAudio();});renderSynth();});
+function _wireSynthStore(){window.synthStore.subscribe(()=>{renderSynth();syncAudio();});renderSynth();}
+if(window.synthStore)_wireSynthStore();
+else window.addEventListener('synthstore-ready',_wireSynthStore,{once:true});
 function cycleKey(){ST().cycleKey();}
 function cycleScale(){ST().cycleScale();}
 function cycleWave(){ST().cycleWave();}
@@ -407,6 +485,36 @@ function dispatch(e){switch(e.type){case'note':playNote(e.index);break;case'chor
 document.addEventListener('keydown',e=>{keys[e.key]=true;if(e.key==='Tab'){e.preventDefault();toggleMenu();}if(e.key==='q'||e.key==='Q')cycleScale();if(currentGame&&currentGame.onKey)currentGame.onKey(e.key,true,host);});
 document.addEventListener('keyup',e=>{keys[e.key]=false;if(currentGame&&currentGame.onKey)currentGame.onKey(e.key,false,host);});
 function toggleMenu(){document.getElementById('game-menu').classList.toggle('hidden');}
+function initTouchControls(){
+  const tc=document.getElementById('touch-controls');if(!tc||tc.dataset.wired==='1')return;
+  const isTouch='ontouchstart' in window||navigator.maxTouchPoints>0||(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
+  if(isTouch)tc.classList.add('enabled');
+  const wired=[];
+  tc.querySelectorAll('[data-key]').forEach(btn=>{
+    const key=btn.dataset.key;let held=false,delayT=null,repT=null;
+    const stopRepeat=()=>{if(delayT){clearTimeout(delayT);delayT=null;}if(repT){clearInterval(repT);repT=null;}};
+    const press=()=>{if(held)return;held=true;btn.classList.add('pressed');keys[key]=true;if(currentGame&&currentGame.onKey)currentGame.onKey(key,true);stopRepeat();delayT=setTimeout(()=>{repT=setInterval(()=>{if(currentGame&&currentGame.onKey)currentGame.onKey(key,true);},60);},250);};
+    const release=()=>{if(!held)return;held=false;btn.classList.remove('pressed');keys[key]=false;stopRepeat();};
+    btn.addEventListener('touchstart',e=>{e.preventDefault();press();},{passive:false});
+    btn.addEventListener('touchend',e=>{e.preventDefault();release();},{passive:false});
+    btn.addEventListener('touchcancel',e=>{e.preventDefault();release();},{passive:false});
+    btn.addEventListener('mousedown',e=>{e.preventDefault();press();});
+    btn.addEventListener('mouseup',e=>{e.preventDefault();release();});
+    btn.addEventListener('mouseleave',()=>release());
+    btn.addEventListener('contextmenu',e=>e.preventDefault());
+    wired.push({btn,key,release});
+  });
+  const menuBtn=tc.querySelector('[data-action="menu"]');
+  if(menuBtn){
+    const flash=()=>{menuBtn.classList.add('pressed');setTimeout(()=>menuBtn.classList.remove('pressed'),120);};
+    const fire=e=>{e.preventDefault();e.stopPropagation();flash();toggleMenu();};
+    menuBtn.addEventListener('touchstart',fire,{passive:false});
+    menuBtn.addEventListener('click',fire);
+    menuBtn.addEventListener('contextmenu',e=>e.preventDefault());
+  }
+  window.addEventListener('blur',()=>{wired.forEach(w=>w.release());});
+  tc.dataset.wired='1';
+}
 function setScore(s){score=s;document.getElementById('score-display').textContent=s;}
 const W=GAME_W,H=GAME_H;
 const GAMES=[
@@ -426,7 +534,8 @@ const GAMES=[
 function buildMenu(){const g=document.getElementById('game-grid');g.innerHTML='';for(const gm of GAMES){const c=document.createElement('div');c.className='game-card';c.innerHTML='<span class="emoji">'+gm.emoji+'</span><div class="name">'+gm.name+'</div><div class="desc">'+gm.desc+'</div>';c.onclick=()=>launchGame(gm.id);g.appendChild(c);}}
 function launchGame(id){const g=GAMES.find(gm=>gm.id===id);if(!g)return;currentGame=g;g.init(host);document.getElementById('game-menu').classList.add('hidden');document.getElementById('current-game-label').textContent=g.name.toUpperCase();analytics.selectGame(id,'menu');}
 function gameFrame(){if(currentGame){currentGame.update(host,1/60);currentGame.draw(host);}requestAnimationFrame(gameFrame);}
-async function startArcade(){await initAudio();document.getElementById('title-screen').classList.add('hidden');document.getElementById('cabinet').classList.add('active');document.getElementById('synth-toggle').classList.add('active');buildMenu();resizeCanvas();gameFrame();analytics.startSession();}
+async function startArcade(){await initAudio();document.getElementById('title-screen').classList.add('hidden');document.getElementById('cabinet').classList.add('active');document.getElementById('synth-toggle').classList.add('active');buildMenu();if(typeof initTouchControls==='function')initTouchControls();resizeCanvas();gameFrame();analytics.startSession();}
+Object.assign(window,{startArcade,toggleMenu,saveGameState,loadGameState,randomizeAll,toggleSynth,cycleKey,cycleScale,cycleWave,cycleArp,cycleOctave,cycleAttack,cycleRelease,setDelay,setReverb,setVolume,setBPM,toggleFullscreen,toggleCRT,toggleCompressorBypass,setCompressorParam});
 window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();});
 
 /* ---------------------------------------------------------------------------

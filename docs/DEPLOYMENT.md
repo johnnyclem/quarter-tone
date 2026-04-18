@@ -2,11 +2,11 @@
 
 Quarter Tone is deployed to [Vercel](https://vercel.com) via GitHub Actions.
 
-| Trigger | Workflow | Environment |
-| --- | --- | --- |
-| Push to `main` | `.github/workflows/deploy-production.yml` | production |
-| Pull request to `main` | `.github/workflows/deploy-preview.yml` | preview |
-| Push / PR | `.github/workflows/ci.yml` | tests, typecheck, build |
+| Trigger                | Workflow                                  | Environment             |
+| ---------------------- | ----------------------------------------- | ----------------------- |
+| Push to `main`         | `.github/workflows/deploy-production.yml` | production              |
+| Pull request to `main` | `.github/workflows/deploy-preview.yml`    | preview                 |
+| Push / PR              | `.github/workflows/ci.yml`                | tests, typecheck, build |
 
 The Vercel build is configured by `vercel.json` at the repo root. The site is
 served as static assets (`index.html` plus the `@quarter-tone/core` build
@@ -35,11 +35,11 @@ bot's PR comments (the workflow posts its own).
 
 In **GitHub → Settings → Secrets and variables → Actions**, add:
 
-| Secret | Where to find it |
-| --- | --- |
-| `VERCEL_TOKEN` | Vercel → Account Settings → Tokens (scope: full account) |
-| `VERCEL_ORG_ID` | `.vercel/project.json` → `orgId` |
-| `VERCEL_PROJECT_ID` | `.vercel/project.json` → `projectId` |
+| Secret              | Where to find it                                         |
+| ------------------- | -------------------------------------------------------- |
+| `VERCEL_TOKEN`      | Vercel → Account Settings → Tokens (scope: full account) |
+| `VERCEL_ORG_ID`     | `.vercel/project.json` → `orgId`                         |
+| `VERCEL_PROJECT_ID` | `.vercel/project.json` → `projectId`                     |
 
 ### 4. (Optional) Create a `production` environment
 

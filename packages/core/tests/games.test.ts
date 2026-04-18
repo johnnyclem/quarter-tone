@@ -317,7 +317,8 @@ describe('kong', () => {
     const h = makeHarness();
     kong.init(h.host);
     for (let frame = 0; frame < 5000; frame++) {
-      if (frame % 40 === 0) h.press('ArrowUp'); else h.release('ArrowUp');
+      if (frame % 40 === 0) h.press('ArrowUp');
+      else h.release('ArrowUp');
       h.press('ArrowRight');
       kong.update(h.host, 1 / 60);
     }
@@ -424,7 +425,7 @@ describe('ghost', () => {
   it('onKey sets each cardinal nextDir including aliases', () => {
     const h = makeHarness();
     ghost.init(h.host);
-    for (const k of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d']) {
+    for (const k of ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd']) {
       ghost.onKey?.(k, true, h.host);
     }
     expect(() => ghost.update(h.host, 1 / 60)).not.toThrow();

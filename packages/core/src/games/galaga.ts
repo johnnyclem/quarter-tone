@@ -8,7 +8,10 @@ interface Enemy {
   diving: boolean;
   da: number;
 }
-interface Bullet { x: number; y: number; }
+interface Bullet {
+  x: number;
+  y: number;
+}
 
 const state = {
   px: 240,

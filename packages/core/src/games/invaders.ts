@@ -1,7 +1,16 @@
 import type { GameDefinition, GameHost } from '../types.js';
 
-interface Enemy { x: number; y: number; alive: boolean; w: number; h: number; }
-interface Bullet { x: number; y: number; }
+interface Enemy {
+  x: number;
+  y: number;
+  alive: boolean;
+  w: number;
+  h: number;
+}
+interface Bullet {
+  x: number;
+  y: number;
+}
 
 const state = {
   px: 240,

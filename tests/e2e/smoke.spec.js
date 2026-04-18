@@ -37,6 +37,24 @@ const TONE_STUB = `
     return n;
   }
 
+  function compressor(opts) {
+    const n = node();
+    const param = (v) => ({ value: v });
+    opts = opts || {};
+    n.threshold = param(opts.threshold ?? -24);
+    n.ratio = param(opts.ratio ?? 12);
+    n.knee = param(opts.knee ?? 30);
+    n.attack = param(opts.attack ?? 0.003);
+    n.release = param(opts.release ?? 0.25);
+    n.reduction = 0;
+    return n;
+  }
+  function gain(g) {
+    const n = node();
+    n.gain = { value: g ?? 1 };
+    return n;
+  }
+
   const Tone = {
     start() { started.value = true; return Promise.resolve(); },
     Reverb: function() { return node(); },
@@ -44,6 +62,8 @@ const TONE_STUB = `
     Volume: function() { return node(); },
     PolySynth: function() { return node(); },
     Synth: function() { return node(); },
+    Compressor: function(opts) { return compressor(opts); },
+    Gain: function(g) { return gain(g); },
     gainToDb(g) { return 20 * Math.log10(Math.max(1e-6, g)); },
     Transport: { bpm: { value: 120 }, start(){}, stop(){} },
   };
@@ -113,10 +133,10 @@ test('title screen \u2192 game launch \u2192 audio plays', async ({ page }) => {
   // the game loop ticks. Give the rAF loop enough frames to produce at least
   // one bounce (~1.3s of simulation at 60fps for a default ball).
   await expect
-    .poll(
-      () => page.evaluate(() => window.__toneCalls?.length ?? 0),
-      { timeout: 8_000, intervals: [100, 250, 500] },
-    )
+    .poll(() => page.evaluate(() => window.__toneCalls?.length ?? 0), {
+      timeout: 8_000,
+      intervals: [100, 250, 500],
+    })
     .toBeGreaterThan(0);
 
   // The score counter wiring is also exercised once paddles get involved;

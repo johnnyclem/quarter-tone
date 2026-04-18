@@ -22,17 +22,21 @@ mapper.getNotes(5); // ['G3', 'A3', 'A#3', 'C4', 'D4']
 
 const game = createPong({
   keys: {},
-  playNote: (i) => { /* feed synth */ },
-  setScore: (s) => { /* update HUD */ },
+  playNote: (i) => {
+    /* feed synth */
+  },
+  setScore: (s) => {
+    /* update HUD */
+  },
   getScore: () => 0,
-  getBpm:   () => 120,
-  width:    480,
-  height:   400,
+  getBpm: () => 120,
+  width: 480,
+  height: 400,
 });
 
 game.init();
-game.update();       // once per frame
-game.draw(ctx);      // 2D canvas surface
+game.update(); // once per frame
+game.draw(ctx); // 2D canvas surface
 ```
 
 Sub-path imports are available for tree-shaking:
@@ -44,12 +48,12 @@ import { GAME_FACTORIES } from '@quarter-tone/core/games';
 
 ## Scripts
 
-| Command               | Description                         |
-| --------------------- | ----------------------------------- |
-| `npm run build`       | Emit ESM + `.d.ts` into `dist/`.    |
-| `npm test`            | Run the Vitest suite.               |
-| `npm run test:coverage` | Run tests with v8 coverage.       |
-| `npm run typecheck`   | `tsc --noEmit`.                     |
+| Command                 | Description                      |
+| ----------------------- | -------------------------------- |
+| `npm run build`         | Emit ESM + `.d.ts` into `dist/`. |
+| `npm test`              | Run the Vitest suite.            |
+| `npm run test:coverage` | Run tests with v8 coverage.      |
+| `npm run typecheck`     | `tsc --noEmit`.                  |
 
 ## Coverage
 

@@ -6,19 +6,16 @@
  * games use to sonify their events.
  */
 
-export const KEYS = [
-  'C', 'C#', 'D', 'D#', 'E', 'F',
-  'F#', 'G', 'G#', 'A', 'A#', 'B',
-] as const;
+export const KEYS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
 export type Key = (typeof KEYS)[number];
 
 export const SCALES = {
-  Major:    [0, 2, 4, 5, 7, 9, 11],
-  Minor:    [0, 2, 3, 5, 7, 8, 10],
-  Penta:    [0, 2, 4, 7, 9],
-  Blues:    [0, 3, 5, 6, 7, 10],
-  Dorian:   [0, 2, 3, 5, 7, 9, 10],
-  Mixo:     [0, 2, 4, 5, 7, 9, 10],
+  Major: [0, 2, 4, 5, 7, 9, 11],
+  Minor: [0, 2, 3, 5, 7, 8, 10],
+  Penta: [0, 2, 4, 7, 9],
+  Blues: [0, 3, 5, 6, 7, 10],
+  Dorian: [0, 2, 3, 5, 7, 9, 10],
+  Mixo: [0, 2, 4, 5, 7, 9, 10],
   Phrygian: [0, 1, 3, 5, 7, 8, 10],
 } as const;
 export type ScaleName = keyof typeof SCALES;
@@ -145,9 +142,7 @@ export class ScaleMapper {
  * Produce a pseudo-random, musically sensible scale state. The generator
  * is injectable so tests can make it deterministic.
  */
-export function randomScaleState(
-  rng: () => number = Math.random,
-): ScaleMapperState {
+export function randomScaleState(rng: () => number = Math.random): ScaleMapperState {
   const scaleNames = Object.keys(SCALES) as ScaleName[];
   return {
     key: Math.floor(rng() * 12),

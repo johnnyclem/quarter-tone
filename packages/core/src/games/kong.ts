@@ -1,7 +1,17 @@
 import type { GameDefinition, GameHost } from '../types.js';
 
-interface Barrel { x: number; y: number; vx: number; vy: number; pi: number; }
-interface Platform { x: number; y: number; w: number; }
+interface Barrel {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  pi: number;
+}
+interface Platform {
+  x: number;
+  y: number;
+  w: number;
+}
 
 const state = {
   px: 40,
@@ -56,7 +66,13 @@ export const kong: GameDefinition = {
     state.py += state.vy;
     state.og = false;
     for (const p of state.plats) {
-      if (state.py >= p.y - 18 && state.py <= p.y && state.px >= p.x && state.px <= p.x + p.w && state.vy >= 0) {
+      if (
+        state.py >= p.y - 18 &&
+        state.py <= p.y &&
+        state.px >= p.x &&
+        state.px <= p.x + p.w &&
+        state.vy >= 0
+      ) {
         state.py = p.y - 18;
         state.vy = 0;
         state.og = true;
@@ -81,7 +97,7 @@ export const kong: GameDefinition = {
           b.y = p.y - 10;
           b.vy = 0;
           b.pi = i;
-          b.vx = (i % 2 === 0) ? -2 : 2;
+          b.vx = i % 2 === 0 ? -2 : 2;
           break;
         }
       }

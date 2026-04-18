@@ -1,7 +1,15 @@
 import type { GameDefinition, GameHost } from '../types.js';
 
-interface Vine { x: number; top: number; bottom: number; }
-interface Fruit { x: number; y: number; alive: boolean; }
+interface Vine {
+  x: number;
+  top: number;
+  bottom: number;
+}
+interface Fruit {
+  x: number;
+  y: number;
+  alive: boolean;
+}
 
 const state = {
   px: 60,

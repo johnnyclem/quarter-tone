@@ -1,7 +1,19 @@
 import type { GameDefinition, GameHost } from '../types.js';
 
-interface Bullet { x: number; y: number; vx: number; vy: number; life: number; }
-interface Asteroid { x: number; y: number; vx: number; vy: number; r: number; }
+interface Bullet {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+}
+interface Asteroid {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  r: number;
+}
 
 const state = {
   px: 240,

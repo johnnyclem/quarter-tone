@@ -21,7 +21,13 @@ export type FakeEvent =
   | { kind: 'connect'; from: string; to: string }
   | { kind: 'toDestination'; from: string }
   | { kind: 'dispose'; node: string }
-  | { kind: 'triggerAttackRelease'; note: string | string[]; duration: string; time: number | undefined; velocity: number | undefined }
+  | {
+      kind: 'triggerAttackRelease';
+      note: string | string[];
+      duration: string;
+      time: number | undefined;
+      velocity: number | undefined;
+    }
   | { kind: 'set'; partial: Record<string, unknown> }
   | { kind: 'releaseAll' }
   | { kind: 'transportBpm'; value: number }
@@ -101,10 +107,7 @@ export class FakeTone implements ToneLib {
       }
     } as unknown as ToneLib['Reverb'];
 
-    this.FeedbackDelay = class FakeFeedbackDelay
-      extends FakeNodeImpl
-      implements ToneFeedbackDelay
-    {
+    this.FeedbackDelay = class FakeFeedbackDelay extends FakeNodeImpl implements ToneFeedbackDelay {
       wet: ToneSignal;
       feedback: ToneSignal;
       delayTime: ToneSignal<string | number>;
@@ -112,11 +115,7 @@ export class FakeTone implements ToneLib {
         super(self, 'FeedbackDelay', { options });
         this.wet = self.makeSignal(this, 'FeedbackDelay.wet');
         this.feedback = self.makeSignal(this, 'FeedbackDelay.feedback');
-        this.delayTime = self.makeSignal<string | number>(
-          this,
-          'FeedbackDelay.delayTime',
-          '8n',
-        );
+        this.delayTime = self.makeSignal<string | number>(this, 'FeedbackDelay.delayTime', '8n');
       }
     } as unknown as ToneLib['FeedbackDelay'];
 
@@ -174,9 +173,7 @@ export class FakeTone implements ToneLib {
         (e): e is Extract<FakeEvent, { kind: 'connect' | 'toDestination' }> =>
           e.kind === 'connect' || e.kind === 'toDestination',
       )
-      .map((e) =>
-        e.kind === 'connect' ? `${e.from} -> ${e.to}` : `${e.from} -> destination`,
-      );
+      .map((e) => (e.kind === 'connect' ? `${e.from} -> ${e.to}` : `${e.from} -> destination`));
   }
 
   /** Find the first node of `type` (throws if absent). */
