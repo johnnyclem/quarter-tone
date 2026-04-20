@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "npm -w @quarter-tone/app run dev",
     "build": "npm -w @quarter-tone/core run build && npm -w @quarter-tone/audio run build && npm -w @quarter-tone/app run build",
+    "build:plugin-ui": "bash scripts/build-plugin-ui.sh",
     "preview": "npm -w @quarter-tone/app run preview",
     "test": "npm -w @quarter-tone/core run test && npm -w @quarter-tone/audio run test",
     "test:coverage": "npm -w @quarter-tone/core run test:coverage && npm -w @quarter-tone/audio run test:coverage",

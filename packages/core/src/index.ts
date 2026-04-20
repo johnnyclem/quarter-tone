@@ -16,3 +16,4 @@ export type {
   ArpMode,
 } from './types.js';
 export * from './games/index.js';
+export * from './plugin/plugin-contract.js';
