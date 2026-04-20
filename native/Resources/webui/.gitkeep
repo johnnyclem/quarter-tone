@@ -1,0 +1,5 @@
+# Placeholder — the real cabinet UI is emitted by scripts/build-plugin-ui.sh
+# into this directory. This marker is tracked so the `Resources/webui/`
+# directory exists in fresh clones; the build script replaces it with the
+# compiled index.html / JS / CSS bundle before linking the plugin.
+This directory is populated at build time by scripts/build-plugin-ui.sh.
